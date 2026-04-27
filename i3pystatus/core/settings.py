@@ -15,7 +15,7 @@ class SettingsBaseMeta(type):
 
     @staticmethod
     def get_merged_settings(cls):
-        pass
+        return ((), set())
 
 
 class SettingsBase(metaclass=SettingsBaseMeta):
