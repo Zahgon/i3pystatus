@@ -37,15 +37,4 @@ class SpaceAPI(IntervalModule):
 
     @require(internet)
     def run(self):
-        res = urlopen(self.url)
-        api = json.loads(res.read())
-
-        self.data['color'] = self.color_open if api['state']['open'] else self.color_closed
-        self.data['state'] = 'open' if api['state']['open'] else 'closed'
-        self.data['message'] = api['state'].get('message', '')
-        self.data['lastchange'] = datetime.fromtimestamp(int(api['state']['lastchange']))
-
-        self.output = {
-            "full_text": self.format.format(**self.data),
-            "color": self.data['color']
-        }
+        pass

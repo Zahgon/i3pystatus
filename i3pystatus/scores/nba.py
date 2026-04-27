@@ -18,66 +18,66 @@ class NBA(ScoresBackend):
 
     .. rubric:: Available formatters
 
-    * `{home_team}` — Depending on the value of the ``team_format`` option,
+    * `{home_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the home team's name, abbreviation, or city
-    * `{home_score}` — Home team's current score
-    * `{home_wins}` — Home team's number of wins
-    * `{home_losses}` — Home team's number of losses
-    * `{home_seed}` — During the playoffs, shows the home team's playoff seed.
+    * `{home_score}` â€” Home team's current score
+    * `{home_wins}` â€” Home team's number of wins
+    * `{home_losses}` â€” Home team's number of losses
+    * `{home_seed}` â€” During the playoffs, shows the home team's playoff seed.
       When not in the playoffs, this formatter will be blank.
-    * `{home_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{home_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the home team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{away_team}` — Depending on the value of the ``team_format`` option,
+    * `{away_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the away team's name, abbreviation, or city
-    * `{away_score}` — Away team's current score
-    * `{away_wins}` — Away team's number of wins
-    * `{away_losses}` — Away team's number of losses
-    * `{away_seed}` — During the playoffs, shows the away team's playoff seed.
+    * `{away_score}` â€” Away team's current score
+    * `{away_wins}` â€” Away team's number of wins
+    * `{away_losses}` â€” Away team's number of losses
+    * `{away_seed}` â€” During the playoffs, shows the away team's playoff seed.
       When not in the playoffs, this formatter will be blank.
-    * `{away_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{away_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the away team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{time_remaining}` — Time remaining in the current quarter/OT period
-    * `{quarter}` — Number of the current quarter
-    * `{start_time}` — Start time of game in system's localtime (supports
+    * `{time_remaining}` â€” Time remaining in the current quarter/OT period
+    * `{quarter}` â€” Number of the current quarter
+    * `{start_time}` â€” Start time of game in system's localtime (supports
       strftime formatting, e.g. `{start_time:%I:%M %p}`)
-    * `{overtime}` — If the game ended in overtime, this formatter will show
+    * `{overtime}` â€” If the game ended in overtime, this formatter will show
       ``OT``. If the game ended in regulation, or has not yet completed, this
       formatter will be blank.
 
     .. rubric:: Team abbreviations
 
-    * **ATL** — Atlanta Hawks
-    * **BKN** — Brooklyn Nets
-    * **BOS** — Boston Celtics
-    * **CHA** — Charlotte Hornets
-    * **CHI** — Chicago Bulls
-    * **CLE** — Cleveland Cavaliers
-    * **DAL** — Dallas Mavericks
-    * **DEN** — Denver Nuggets
-    * **DET** — Detroit Pistons
-    * **GSW** — Golden State Warriors
-    * **HOU** — Houston Rockets
-    * **IND** — Indiana Pacers
-    * **MIA** — Miami Heat
-    * **MEM** — Memphis Grizzlies
-    * **MIL** — Milwaukee Bucks
-    * **LAC** — Los Angeles Clippers
-    * **LAL** — Los Angeles Lakers
-    * **MIN** — Minnesota Timberwolves
-    * **NOP** — New Orleans Pelicans
-    * **NYK** — New York Knicks
-    * **OKC** — Oklahoma City Thunder
-    * **ORL** — Orlando Magic
-    * **PHI** — Philadelphia 76ers
-    * **PHX** — Phoenix Suns
-    * **POR** — Portland Trailblazers
-    * **SAC** — Sacramento Kings
-    * **SAS** — San Antonio Spurs
-    * **TOR** — Toronto Raptors
-    * **UTA** — Utah Jazz
-    * **WAS** — Washington Wizards
+    * **ATL** â€” Atlanta Hawks
+    * **BKN** â€” Brooklyn Nets
+    * **BOS** â€” Boston Celtics
+    * **CHA** â€” Charlotte Hornets
+    * **CHI** â€” Chicago Bulls
+    * **CLE** â€” Cleveland Cavaliers
+    * **DAL** â€” Dallas Mavericks
+    * **DEN** â€” Denver Nuggets
+    * **DET** â€” Detroit Pistons
+    * **GSW** â€” Golden State Warriors
+    * **HOU** â€” Houston Rockets
+    * **IND** â€” Indiana Pacers
+    * **MIA** â€” Miami Heat
+    * **MEM** â€” Memphis Grizzlies
+    * **MIL** â€” Milwaukee Bucks
+    * **LAC** â€” Los Angeles Clippers
+    * **LAL** â€” Los Angeles Lakers
+    * **MIN** â€” Minnesota Timberwolves
+    * **NOP** â€” New Orleans Pelicans
+    * **NYK** â€” New York Knicks
+    * **OKC** â€” Oklahoma City Thunder
+    * **ORL** â€” Orlando Magic
+    * **PHI** â€” Philadelphia 76ers
+    * **PHX** â€” Phoenix Suns
+    * **POR** â€” Portland Trailblazers
+    * **SAC** â€” Sacramento Kings
+    * **SAS** â€” San Antonio Spurs
+    * **TOR** â€” Toronto Raptors
+    * **UTA** â€” Utah Jazz
+    * **WAS** â€” Washington Wizards
     '''
     interval = 300
 
@@ -178,135 +178,7 @@ class NBA(ScoresBackend):
     team_format = None
 
     def check_scores(self):
-        self.get_api_date()
-
-        response = self.api_request(self.api_url)
-        game_list = self.get_nested(response, 'scoreboard:games', default=[])
-
-        # Convert list of games to dictionary for easy reference later on
-        data = {}
-        team_game_map = {}
-        for game in game_list:
-            try:
-                id_ = game['gameId']
-            except KeyError:
-                continue
-
-            try:
-                for key in ('homeTeam', 'awayTeam'):
-                    team = game[key]['teamTricode']
-                    if team in self.favorite_teams:
-                        team_game_map.setdefault(team, []).append(id_)
-            except KeyError:
-                continue
-
-            data[id_] = game
-
-        self.interpret_api_return(data, team_game_map)
+        pass
 
     def process_game(self, game):
-        ret = {}
-
-        def _update(ret_key, game_key=None, callback=None, default='?'):
-            ret[ret_key] = self.get_nested(game,
-                                           game_key or ret_key,
-                                           callback=callback,
-                                           default=default)
-
-        self.logger.debug(f'Processing {self.name} game data: {game}')
-
-        _update('id', 'gameId')
-        ret['live_url'] = self.live_url.format(id=ret['id'])
-
-        if game.get('gameStatusText', '') == 'PPD':
-            ret['status'] = 'postponed'
-        else:
-            status_map = {
-                1: 'pregame',
-                2: 'in_progress',
-                3: 'final',
-            }
-            status_code = int(game.get('gameStatus', 1))
-            status = status_map.get(status_code)
-            if status is None:
-                self.logger.debug(
-                    f"Unknown {self.name} game status code '{status_code}'"
-                )
-                status_code = '1'
-            ret['status'] = status_map[status_code]
-
-        if ret['status'] in ('in_progress', 'final'):
-            period_number = int(game.get('period', 1))
-            total_periods = int(game.get('regulationPeriods', 4))
-            period_diff = period_number - total_periods
-            ret['quarter'] = 'OT' \
-                if period_diff == 1 \
-                else f'{period_diff}OT' if period_diff > 1 \
-                else self.add_ordinal(period_number)
-        else:
-            ret['quarter'] = ''
-
-        clock = game.get('gameClock', '')
-        ret['time_remaining'] = ''
-        if clock:
-            try:
-                mins, secs = re.match(r'^PT(\d+)M(\d+\.\d)0?S$', clock).groups()
-            except AttributeError:
-                self.logger.warning(f'Failed to parse gameClock value: {clock}')
-            else:
-                mins = mins.lstrip('0')
-                if mins:
-                    secs = secs.split('.')[0]
-                if not mins and secs == '00.0':
-                    ret['time_remaining'] = 'End'
-                else:
-                    ret['time_remaining'] = f'{mins}:{secs}'
-
-        ret['overtime'] = ret['quarter'] if 'OT' in ret['quarter'] else ''
-
-        for key in ('home', 'away'):
-            team_key = f'{key}Team'
-            _update(f'{key}_score', f'{team_key}:score',
-                    callback=self.zero_fallback, default='0')
-            _update(f'{key}_city', f'{team_key}:teamCity')
-            _update(f'{key}_name', f'{team_key}:teamName')
-            _update(f'{key}_abbreviation', f'{team_key}:teamTricode')
-            if 'playoffs' in game:
-                _update(f'{key}_wins', f'playoffs:{key}_wins',
-                        callback=self.zero_fallback, default='0')
-                _update(f'{key}_seed', f'playoffs:{key}_seed',
-                        callback=self.zero_fallback, default='0')
-            else:
-                _update(f'{key}_wins', f'{team_key}:wins',
-                        callback=self.zero_fallback, default='0')
-                _update(f'{key}_losses', f'{team_key}:losses',
-                        callback=self.zero_fallback, default='0')
-                ret[f'{key}_seed'] = ''
-
-        if 'playoffs' in game:
-            ret['home_losses'] = ret['away_wins']
-            ret['away_losses'] = ret['home_wins']
-
-        # From API data, date is YYYYMMDD, time is HHMM
-        try:
-            game_time = datetime.strptime(
-                game.get('gameTimeUTC', ''),
-                '%Y-%m-%dT%H:%M:%SZ'
-            ).replace(tzinfo=timezone.utc)
-        except ValueError as exc:
-            # Log when the date retrieved from the API return doesn't match the
-            # expected format (to help troubleshoot API changes), and set an
-            # actual datetime so format strings work as expected. The times
-            # will all be wrong, but the logging here will help us make the
-            # necessary changes to adapt to any API changes.
-            self.logger.exception(
-                f'Error encountered determining game time for {self.name} '
-                f'game {game["id"]} (time string: {game_et})'
-            )
-            game_time = datetime.datetime(1970, 1, 1)
-
-        ret['start_time'] = game_time.astimezone()
-
-        self.logger.debug(f'Returned {self.name} formatter data: {ret}')
-
-        return ret
+        pass

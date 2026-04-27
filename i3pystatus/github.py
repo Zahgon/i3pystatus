@@ -72,16 +72,16 @@ class Github(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{status}` — Current GitHub status. This formatter can be different
+    * `{status}` â€” Current GitHub status. This formatter can be different
       depending on the current outage status (``none``, ``minor``, ``major``,
       or ``critical``). The content displayed for each of these statuses is
       defined in the **status** config option.
-    * `{unread}` — When there are unread notifications, this formatter will
+    * `{unread}` â€” When there are unread notifications, this formatter will
       contain the value of the **unread_marker** marker config option.
       there are no unread notifications, it formatter will be an empty string.
-    * `{unread_count}` — The number of unread notifications
+    * `{unread_count}` â€” The number of unread notifications
       notifications, it will be an empty string.
-    * `{update_error}` — When an error is encountered updating this module,
+    * `{update_error}` â€” When an error is encountered updating this module,
       this formatter will be set to the value of the **update_error**
       config option.
 
@@ -89,15 +89,15 @@ class Github(IntervalModule):
 
     This module responds to 4 different click events:
 
-    - **Left-click** — Forces an update of the module.
-    - **Right-click** — Triggers a desktop notification showing the most recent
+    - **Left-click** â€” Forces an update of the module.
+    - **Right-click** â€” Triggers a desktop notification showing the most recent
       update to the GitHub status. This is useful when the status changes when
       you are away from your computer, so that the updated status can be seen
       without visiting the `GitHub Status Dashboard`_. This click event
       requires **notify_status** to be set to ``True``.
-    - **Double left-click** — Opens the GitHub `notifications page`_ in your web
+    - **Double left-click** â€” Opens the GitHub `notifications page`_ in your web
       browser.
-    - **Double right-click** — Opens the `GitHub Status Dashboard`_ in your web
+    - **Double right-click** â€” Opens the `GitHub Status Dashboard`_ in your web
       browser.
 
     .. rubric:: Desktop notifications
@@ -134,9 +134,9 @@ class Github(IntervalModule):
             access_token='0123456789abcdef0123456789abcdef01234567',
             hints={'markup': 'pango'},
             update_error='<span color="#af0000">!</span>',
-            refresh_icon='<span color="#ff5f00">⟳</span>',
+            refresh_icon='<span color="#ff5f00">âŸ³</span>',
             status={
-                'none': '✓',
+                'none': 'âœ“',
                 'minor': '!',
                 'major': '!!',
                 'critical': '!!!',
@@ -234,12 +234,12 @@ class Github(IntervalModule):
     format = '{status}[ {unread}][ {update_error}]'
     status = {}
     colors = _default_colors
-    refresh_icon = '⟳'
+    refresh_icon = 'âŸ³'
     update_error = '!'
     username = ''
     password = ''
     access_token = ''
-    unread_marker = '•'
+    unread_marker = 'â€¢'
     notify_status = False
     notify_unread = False
     unread_notification_template = 'You have %d new notification(s)'
@@ -277,371 +277,73 @@ class Github(IntervalModule):
 
     @require(internet)
     def launch_status_url(self):
-        self.logger.debug('Launching %s in browser', self.status_url)
-        user_open(self.status_url)
+        pass
 
     @require(internet)
     def launch_notifications_url(self):
-        self.logger.debug('Launching %s in browser', self.notifications_url)
-        user_open(self.notifications_url)
+        pass
 
     def init(self):
-        if self.colors != self._default_colors:
-            new_colors = copy.copy(self._default_colors)
-            new_colors.update(self.colors)
-            self.colors = new_colors
-
-        self.logger.debug('colors = %s', self.colors)
-
-        self.condition = threading.Condition()
-        self.thread = threading.Thread(target=self.update_loop, daemon=True)
-        self.thread.start()
+        pass
 
     def update_loop(self):
-        try:
-            self.perform_update()
-            while True:
-                with self.condition:
-                    self.condition.wait(self.interval)
-                self.perform_update()
-        except Exception:
-            msg = 'Exception in {thread} at {time}, module {name}'.format(
-                thread=threading.current_thread().name,
-                time=time.strftime('%c'),
-                name=self.__class__.__name__,
-            )
-            self.logger.error(msg, exc_info=True)
+        pass
 
     @require(internet)
     def status_api_request(self, url):
-        self.logger.debug('Making GitHub Status API request to %s', url)
-        try:
-            with urlopen(url) as content:
-                try:
-                    content_type = dict(content.getheaders())['Content-Type']
-                    charset = re.search(r'charset=(.*)', content_type).group(1)
-                except AttributeError:
-                    charset = 'utf-8'
-                response_json = content.read().decode(charset).strip()
-                if not response_json:
-                    self.logger.error('JSON response from %s was blank', url)
-                    return {}
-                try:
-                    response = json.loads(response_json)
-                except json.decoder.JSONDecodeError as exc:
-                    self.logger.error('Error loading JSON: %s', exc)
-                    self.logger.debug('JSON text that failed to load: %s',
-                                      response_json)
-                    return {}
-                self.logger.log(5, 'API response: %s', response)
-                return response
-        except Exception as exc:
-            self.logger.error(
-                'Failed to make API request to %s. Exception follows:', url,
-                exc_info=True
-            )
-            return {}
+        pass
 
     def detect_status_change(self, response=None):
-        if response is not None:
-            # Compare last update to current and exit without displaying a
-            # notification if one is not needed.
-            if self.__previous_json is None:
-                # This is the first time status has been updated since
-                # i3pystatus was started. Set self.__previous_json and exit.
-                self.__previous_json = response
-                return
-            if response.get('status', {}).get('description') == self.__previous_json.get('status', {}).get('description'):
-                # No change, so no notification
-                return
-            self.__previous_json = response
-
-        if self.__previous_json is None:
-            # The only way this would happen is if we invoked the right-click
-            # event before we completed the initial status check.
-            return
-
-        self.show_status_notification()
+        pass
 
     @staticmethod
     def notify(message):
-        return DesktopNotification(title='GitHub', body=message).display()
+        pass
 
     def skip_notify(self, message):
-        self.logger.debug(
-            'Desktop notifications turned off. Skipped notification: %s',
-            message
-        )
-        return False
+        pass
 
     def show_status_notification(self):
-        message = self.current_status_description
-        self.skip_notify(message) \
-            if not self.notify_status or (self.previous_status is None and self.current_status == 'none') \
-            else self.notify(message)
+        pass
 
     def show_unread_notification(self):
-        if '%d' not in self.unread_notification_template:
-            formatted = self.unread_notification_template
-        else:
-            try:
-                new_unread = len(self.new_unread)
-            except TypeError:
-                new_unread = 0
-            try:
-                formatted = self.unread_notification_template % new_unread
-            except TypeError as exc:
-                self.logger.error(
-                    'Failed to format {0!r}: {1}'.format(
-                        self.unread_notification_template,
-                        exc
-                    )
-                )
-                return False
-        return self.skip_notify(formatted) \
-            if not self.notify_unread \
-            else self.notify(formatted)
+        pass
 
     @require(internet)
     def perform_update(self):
-        self.output['full_text'] = \
-            self.refresh_icon + self.output.get('full_text', '')
-        self.failed_update = False
-
-        self.update_status()
-        try:
-            self.config_error = None
-            self.update_unread()
-        except ConfigError as exc:
-            self.config_error = exc
-
-        self.data['update_error'] = self.update_error \
-            if self.failed_update \
-            else ''
-        self.refresh_display()
+        pass
 
     @property
     def current_incidents(self):
-        try:
-            return self.__current_json['incidents']
-        except (KeyError, TypeError):
-            return []
+        pass
 
     @property
     def previous_incidents(self):
-        try:
-            return self.__previous_json['incidents']
-        except (KeyError, TypeError):
-            return []
+        pass
 
     @property
     def current_status(self):
-        try:
-            return self.__current_json['status']['indicator']
-        except (KeyError, TypeError):
-            return None
+        pass
 
     @property
     def previous_status(self):
-        try:
-            return self.__previous_json['status']['indicator']
-        except (KeyError, TypeError):
-            return None
+        pass
 
     @property
     def current_status_description(self):
-        try:
-            return self.__current_json['status']['description']
-        except (KeyError, TypeError):
-            return None
+        pass
 
     @require(internet)
     def update_status(self):
-        try:
-            # Get most recent update
-            self.__current_json = self.status_api_request(self.api_methods_url)
-            if not self.__current_json:
-                self.failed_update = True
-                return
-
-            self.logger.debug('Current GitHub Status: %s', self.current_status)
-            self.data['status'] = self.status.get(self.current_status, 'GitHub')
-            if self.current_incidents != self.previous_incidents:
-                self.show_status_notification()
-            self.__previous_json = self.__current_json
-
-        except Exception:
-            # Don't let an uncaught exception kill the update thread
-            self.logger.error(
-                'Uncaught error occurred while checking GitHub status. '
-                'Exception follows:', exc_info=True
-            )
-            self.failed_update = True
+        pass
 
     @require(internet)
     def update_unread(self):
         # Reset the new_unread attribute to prevent spurious notifications
-        self.new_unread = None
-
-        try:
-            if not self.username and not self.password and not self.access_token:
-                # Auth not configured
-                self.logger.debug(
-                    'No auth configured, notifications will not be checked')
-                return True
-
-            if not HAS_REQUESTS:
-                self.logger.error(
-                    'The requests module is required to check GitHub notifications')
-                self.failed_update = True
-                return False
-
-            self.logger.debug(
-                'Checking unread notifications using %s',
-                'access token' if self.access_token else 'username/password'
-            )
-
-            if self.access_token:
-                request_kwargs = {
-                    'headers': {
-                        'Authorization': 'token {}'.format(self.access_token),
-                    },
-                }
-            else:
-                request_kwargs = {
-                    'auth': (self.username, self.password),
-                }
-
-            self.current_unread = set()
-            page_num = 0
-            old_unread_url = None
-            unread_url = AUTH_URL
-            while old_unread_url != unread_url:
-                old_unread_url = unread_url
-                page_num += 1
-                self.logger.debug(
-                    'Reading page %d of notifications (%s)',
-                    page_num, unread_url
-                )
-                try:
-                    response = requests.get(unread_url, **request_kwargs)
-                    self.logger.log(
-                        5,
-                        'Raw return from GitHub notification check: %s',
-                        response.text)
-                    unread_data = json.loads(response.text)
-                except (requests.ConnectionError, requests.Timeout) as exc:
-                    self.logger.error(
-                        'Failed to check unread notifications: %s', exc)
-                    self.failed_update = True
-                    return False
-                except json.decoder.JSONDecodeError as exc:
-                    self.logger.error('Error loading JSON: %s', exc)
-                    self.logger.debug(
-                        'JSON text that failed to load: %s', response.text)
-                    self.failed_update = True
-                    return False
-
-                # Bad credentials or some other error
-                if isinstance(unread_data, dict):
-                    raise ConfigError(
-                        unread_data.get(
-                            'message',
-                            'Unknown error encountered retrieving unread notifications'
-                        )
-                    )
-
-                # Update the current count of unread notifications
-                self.current_unread.update(
-                    [x['id'] for x in unread_data if 'id' in x]
-                )
-
-                # Check 'Link' header for next page of notifications
-                # (https://tools.ietf.org/html/rfc5988#section-5)
-                self.logger.debug('Checking for next page of notifications')
-                try:
-                    link_header = response.headers['Link']
-                except AttributeError:
-                    self.logger.error(
-                        'No headers present in response. This might be due to '
-                        'an API change in the requests module.'
-                    )
-                    self.failed_update = True
-                    continue
-                except KeyError:
-                    self.logger.debug('Only one page of notifications present')
-                    continue
-                else:
-                    # Process 'Link' header
-                    try:
-                        links = requests.utils.parse_header_links(link_header)
-                    except Exception as exc:
-                        self.logger.error(
-                            'Failed to parse \'Link\' header: %s', exc
-                        )
-                        self.failed_update = True
-                        continue
-
-                    for link in links:
-                        try:
-                            link_rel = link['rel']
-                            if link_rel != 'next':
-                                # Link does not refer to the next page, skip it
-                                continue
-                            # Set the unread_url so that when we reach the top
-                            # of the outer loop, we have a new URL to check.
-                            unread_url = link['url']
-                            break
-                        except TypeError:
-                            # Malformed hypermedia link
-                            self.logger.warning(
-                                'Malformed hypermedia link (%s) in \'Link\' '
-                                'header (%s)', link, links
-                            )
-                            continue
-                    else:
-                        self.logger.debug('No more pages of notifications remain')
-
-            if self.failed_update:
-                return False
-
-            self.data['unread_count'] = len(self.current_unread)
-            self.data['unread'] = self.unread_marker \
-                if self.data['unread_count'] > 0 \
-                else ''
-
-            if self.previous_unread is not None:
-                if not self.current_unread.issubset(self.previous_unread):
-                    self.new_unread = self.current_unread - self.previous_unread
-                    if self.new_unread:
-                        self.show_unread_notification()
-            self.previous_unread = self.current_unread
-            return True
-        except ConfigError as exc:
-            # This will be caught by the calling function
-            raise exc
-        except Exception as exc:
-            # Don't let an uncaught exception kill the update thread
-            self.logger.error(
-                'Uncaught error occurred while checking GitHub notifications. '
-                'Exception follows:', exc_info=True
-            )
-            self.failed_update = True
-            return False
+        pass
 
     def refresh_display(self):
-        previous_color = self.output.get('color')
-        try:
-            color = self.colors.get(
-                self.current_status,
-                self.unknown_color)
-        except TypeError:
-            # Shouldn't get here, but this would happen if this function is
-            # called before we check the current status for the first time.
-            color = previous_color
-        self.output = {'full_text': formatp(self.format, **self.data).strip(),
-                       'color': color}
+        pass
 
     def run(self):
-        if self.config_error is not None:
-            raise self.config_error
+        pass

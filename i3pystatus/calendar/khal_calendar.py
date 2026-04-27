@@ -17,7 +17,7 @@ class KhalEvent(CalendarEvent):
 
     @formatter
     def calendar(self):
-        return self._calendar
+        pass
 
 
 class Khal(CalendarBackend):
@@ -25,7 +25,7 @@ class Khal(CalendarBackend):
     Backend for Khal. Requires `khal` to be installed.
 
     .. rubric:: Available formatters
-        * `{calendar}` — Calendar event is from.
+        * `{calendar}` â€” Calendar event is from.
     """
 
     settings = (
@@ -40,26 +40,10 @@ class Khal(CalendarBackend):
     calendars = None
 
     def init(self):
-        self.collection = None
-        self.events = []
+        pass
 
     def open_connection(self):
-        self.logger.debug("Opening collection with config {}".format(self.config_path))
-        config = khal.settings.get_config(self.config_path)
-        self.collection = khal.cli.build_collection(config, None)
+        pass
 
     def update(self):
-        if self.collection is None:
-            self.open_connection()
-        events = []
-        for days in range(self.days):
-            events += list(self.collection.get_events_on(
-                date.today() + timedelta(days=days))
-            )
-
-        # filter out unwanted calendars
-        self.logger.debug("calendars %s" % self.calendars)
-        if self.calendars is not None:
-            events = [evt for evt in events if evt.calendar in self.calendars]
-        for event in events:
-            self.events.append(KhalEvent(event))
+        pass

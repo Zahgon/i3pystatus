@@ -14,8 +14,8 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
 
     .. rubric:: Available formatters
 
-    * `{usage_bar}`      — usage average of all cores
-    * `{usage_bar_cpu*}` — usage of one specific core. replace "*" by core number starting at 0
+    * `{usage_bar}`      â€” usage average of all cores
+    * `{usage_bar_cpu*}` â€” usage of one specific core. replace "*" by core number starting at 0
     """
 
     format = "{usage_bar}"
@@ -34,30 +34,7 @@ class CpuUsageBar(CpuUsage, ColorRangeModule):
     )
 
     def init(self):
-        super().init()
-        self.colors = self.get_hex_color_range(self.start_color, self.end_color, 100)
+        pass
 
     def run(self):
-        cpu_usage = self.get_usage()
-
-        cpu_usage_bar = {}
-
-        for core, usage in cpu_usage.items():
-            core = core.replace('usage', 'usage_bar')
-            if self.bar_type == 'horizontal':
-                cpu_usage_bar[core] = make_bar(usage)
-            elif self.bar_type == 'vertical':
-                cpu_usage_bar[core] = make_vertical_bar(usage)
-            else:
-                raise Exception("bar_type must be 'horizontal' or 'vertical'!")
-
-        cpu_usage.update(cpu_usage_bar)
-
-        # for backward compatibility
-        cpu_usage['usage_bar'] = cpu_usage['usage_bar_cpu']
-
-        self.data = cpu_usage
-        self.output = {
-            "full_text": self.format.format_map(cpu_usage),
-            'color': self.get_gradient(cpu_usage[self.cpu], self.colors, 100)
-        }
+        pass

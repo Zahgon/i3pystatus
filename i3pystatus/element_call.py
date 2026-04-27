@@ -19,9 +19,9 @@ class ElementCall(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * ``{participants}`` — number of active call participants
-    * ``{room_id}`` — the Matrix room ID being monitored
-    * ``{room_alias}`` — the room_alias setting value
+    * ``{participants}`` â€” number of active call participants
+    * ``{room_id}`` â€” the Matrix room ID being monitored
+    * ``{room_alias}`` â€” the room_alias setting value
 
     .. rubric:: Example configuration
 
@@ -69,101 +69,16 @@ class ElementCall(IntervalModule):
 
     @require(internet)
     def run(self):
-        try:
-            participants = self._count_participants()
-        except Exception:
-            self.output = {
-                "full_text": self.format_error,
-                "color": self.color_error,
-            }
-            return
-
-        fdict = {
-            "participants": participants,
-            "room_id": self.room_id,
-            "room_alias": self.room_alias,
-        }
-
-        if participants > 0:
-            self.output = {
-                "full_text": self.format_active.format(**fdict),
-                "color": self.color_active,
-            }
-        else:
-            self.output = {
-                "full_text": self.format_empty.format(**fdict),
-                "color": self.color_empty,
-            }
+        pass
 
     def _resolve_room_id(self, room_id_or_alias):
         """Resolve a room alias (#name:server) to a room ID (!id:server) if needed."""
-        if room_id_or_alias.startswith("!"):
-            return room_id_or_alias
-        url = "{homeserver}/_matrix/client/v3/directory/room/{alias}".format(
-            homeserver=self.homeserver.rstrip("/"),
-            alias=urllib.parse.quote(room_id_or_alias, safe=""),
-        )
-        req = urllib.request.Request(
-            url,
-            headers={"Authorization": "Bearer {}".format(self.access_token)},
-        )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        return data["room_id"]
+        pass
 
     def _count_participants(self):
         """Return the number of active call participants in the room."""
-        resolved_id = self._resolve_room_id(self.room_id)
-        url = "{homeserver}/_matrix/client/v3/rooms/{room_id}/state".format(
-            homeserver=self.homeserver.rstrip("/"),
-            room_id=urllib.parse.quote(resolved_id, safe=""),
-        )
-        req = urllib.request.Request(
-            url,
-            headers={"Authorization": "Bearer {}".format(self.access_token)},
-        )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            state_events = json.loads(resp.read().decode("utf-8"))
-
-        now_ms = int(time.time() * 1000)
-        active_users = set()
-
-        for event in state_events:
-            if event.get("type") != self._CALL_MEMBER_TYPE:
-                continue
-
-            content = event.get("content", {})
-            if not content:
-                # Empty content means the member has left
-                continue
-
-            user_id = event.get("sender") or event.get("user_id", "")
-            state_key = event.get("state_key", "")
-
-            origin_ts = event.get("origin_server_ts", 0)
-
-            if state_key.startswith("@"):
-                # Per-user format: content has a "memberships" list
-                for membership in content.get("memberships", []):
-                    if self._membership_active(membership, now_ms, origin_ts):
-                        active_users.add(user_id)
-                        break
-            else:
-                # Per-device format: content itself is the membership object
-                if self._membership_active(content, now_ms, origin_ts):
-                    active_users.add(user_id)
-
-        return len(active_users)
+        pass
 
     def _membership_active(self, membership, now_ms, origin_ts=0):
         """Return True if this membership entry has not yet expired."""
-        expires = membership.get("expires", 0)
-        if not expires:
-            return False
-        # Values > 1e12 are absolute epoch-ms timestamps.
-        # Smaller values are relative durations; anchor to created_ts, falling
-        # back to origin_server_ts from the event if created_ts is absent.
-        if expires > 1_000_000_000_000:
-            return expires > now_ms
-        created_ts = membership.get("created_ts") or origin_ts
-        return (created_ts + expires) > now_ms
+        pass

@@ -47,50 +47,13 @@ class Ping(IntervalModule):
     on_leftclick = "switch_state"
 
     def init(self):
-        if not self.color_bad:
-            self.color_bad = self.color
-        if not self.color_down:
-            self.color_down = self.color
-        if not self.format_disabled:
-            self.format_disabled = self.format_down
-        if not self.color_disabled:
-            self.color_disabled = self.color_down
+        pass
 
     def switch_state(self):
-        self.disabled = not self.disabled
+        pass
 
     def ping_host(self):
-        p = subprocess.Popen(["ping", "-c1", "-w%d" % self.interval,
-                              self.host], stdout=subprocess.PIPE,
-                             stderr=subprocess.DEVNULL)
-        out, _ = p.communicate()
-        if p.returncode == 0:
-            return float(out.decode().split("\n")[1]
-                         .split("time=")[1].split()[0])
-        else:
-            return None
+        pass
 
     def run(self):
-        if self.disabled:
-            self.output = {
-                "full_text": self.format_disabled,
-                "color": self.color_disabled
-            }
-            return
-
-        ping = self.ping_host()
-        if not ping:
-            self.output = {
-                "full_text": self.format_down,
-                "color": self.color_down
-            }
-            return
-
-        color = self.color
-        if ping > self.latency_threshold:
-            color = self.color_bad
-
-        self.output = {
-            "full_text": self.format.format(ping=ping),
-            "color": color
-        }
+        pass

@@ -21,13 +21,4 @@ class Online(IntervalModule):
     interval = 10
 
     def run(self):
-        if internet():
-            self.output = {
-                "color": self.color,
-                "full_text": self.format_online,
-            }
-        else:
-            self.output = {
-                "color": self.color_offline,
-                "full_text": self.format_offline,
-            }
+        pass

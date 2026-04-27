@@ -8,7 +8,7 @@ class DPMS(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{status}` — the current status of DPMS
+    * `{status}` â€” the current status of DPMS
 
     @author Georg Sieber <g.sieber AT gmail.com>
     """
@@ -33,21 +33,7 @@ class DPMS(IntervalModule):
 
     def run(self):
 
-        self.status = run_through_shell("xset -q | grep -q 'DPMS is Enabled'", True).rc == 0
-
-        if self.status:
-            self.output = {
-                "full_text": self.format.format(status="on"),
-                "color": self.color
-            }
-        else:
-            self.output = {
-                "full_text": self.format_disabled.format(status="off"),
-                "color": self.color_disabled
-            }
+        pass
 
     def toggle_dpms(self):
-        if self.status:
-            run_through_shell("xset -dpms s off", True)
-        else:
-            run_through_shell("xset +dpms s on", True)
+        pass

@@ -18,17 +18,17 @@ class OpenVPN(IntervalModule):
 
     Formatters:
 
-    * {vpn_name} — Same as setting.
-    * {status} — Unicode up or down symbol.
-    * {output} — Output of status_command.
-    * {label} — Label for this connection, if defined.
+    * {vpn_name} â€” Same as setting.
+    * {status} â€” Unicode up or down symbol.
+    * {output} â€” Output of status_command.
+    * {label} â€” Label for this connection, if defined.
 
     """
 
     color_up = "#00ff00"
     color_down = "#FF0000"
-    status_up = '▲'
-    status_down = '▼'
+    status_up = 'â–²'
+    status_down = 'â–¼'
     format = "{vpn_name} {status}"
 
     use_new_service_name = False
@@ -54,38 +54,13 @@ class OpenVPN(IntervalModule):
     )
 
     def init(self):
-        if not self.vpn_name:
-            raise Exception("vpn_name is required")
-
-        if self.use_new_service_name:
-            self.status_command = "bash -c 'systemctl show openvpn-client@%(vpn_name)s | grep ActiveState=active'"
-            self.vpn_up_command = "sudo /bin/systemctl start openvpn-client@%(vpn_name)s.service"
-            self.vpn_down_command = "sudo /bin/systemctl stop openvpn-client@%(vpn_name)s.service"
+        pass
 
     def toggle_connection(self):
-        if self.connected:
-            command = self.vpn_down_command
-        else:
-            command = self.vpn_up_command
-        run_through_shell(command % {'vpn_name': self.vpn_name}, enable_shell=True)
+        pass
 
     def on_click(self, button, **kwargs):
-        self.toggle_connection()
+        pass
 
     def run(self):
-        command_result = run_through_shell(self.status_command % {'vpn_name': self.vpn_name}, enable_shell=True)
-        self.connected = True if command_result.out.strip() else False
-
-        if self.connected:
-            color, status = self.color_up, self.status_up
-        else:
-            color, status = self.color_down, self.status_down
-
-        vpn_name = self.vpn_name
-        label = self.label
-
-        self.data = locals()
-        self.output = {
-            "full_text": self.format.format(**locals()),
-            'color': color,
-        }
+        pass

@@ -106,186 +106,44 @@ class Buds(IntervalModule, ColorRangeModule):
     on_doubledownscroll = ['touchpad_set', 'false']
 
     def init(self):
-        if not self.dynamic_color:
-            self.end_color = self.start_color = self.connected_color
-        # battery discharges from battery_limit to 0
-        self.colors = self.get_hex_color_range(self.end_color, self.start_color, self.battery_limit)
+        pass
 
     def run(self):
-        try:
-            status = loads(run_through_shell(f"{self.earbuds_binary} status -o json -q").out)
-        except JSONDecodeError:
-            self.output = None
-        else:
-            payload = status.get("payload")
-            if payload:
-                amb = payload.get("ambient_sound_enabled")
-                anc = payload.get("noise_reduction")
-                left_battery = payload.get("batt_left")
-                right_battery = payload.get("batt_right")
-                equalizer_type = BudsEqualizer(payload.get("equalizer_type", 0))
-                placement_left = payload.get("placement_left")
-                placement_right = payload.get("placement_right")
-                tab_lock_status = payload.get("tab_lock_status")
-                battery_display, combined_level = self.battery_display_status(
-                    left_battery, right_battery, placement_left, placement_right
-                )
-                battery_case_display = self.battery_case_display(
-                    payload.get("batt_case"), left_battery, right_battery, placement_left, placement_right
-                )
-
-                color = self.connected_color
-                if self.dynamic_color:
-                    color = self.get_gradient(
-                        combined_level,
-                        self.colors,
-                        self.battery_limit
-                    )
-
-                fdict = {
-                    "amb": " AMB" if amb else "",
-                    "anc": " ANC" if anc else "",
-                    "battery": battery_display,
-                    "left_battery": left_battery,
-                    "right_battery": right_battery,
-                    "battery_case": battery_case_display,
-                    "device_model": payload.get("model"),
-                    "equalizer": "" if equalizer_type == BudsEqualizer.off else f" {equalizer_type.name.capitalize()}",
-                    "placement_left": self.translate_placement(placement_left),
-                    "placement_right": self.translate_placement(placement_right),
-                    "touchpad": self.touchpad_lock_status(tab_lock_status)
-                }
-
-                self.output = {
-                    "full_text": self.format.format(**fdict),
-                    "color": color
-                }
-
-                return payload
-            else:
-                if not self.hide_no_device:
-                    self.output = {
-                        "full_text": "Disconnected",
-                        "color": self.disconnected_color
-                    }
-                else:
-                    self.output = None
-
-        return
+        pass
 
     def battery_display_status(self, left_battery, right_battery, placement_left, placement_right):
         # determine battery level
-        battery_display = f"{left_battery} {right_battery}"
-        combined_level = min(left_battery, right_battery)
-        # if one bud has battery depleted, invert the logic.
-        if left_battery == 0 or right_battery == 0:
-            combined_level = max(left_battery, right_battery)
-        if self.use_battery_drift_threshold:
-            drift = abs(left_battery - right_battery)
-            # only use drift if buds aren't on case, otherwise show both.
-            if drift <= self.battery_drift_threshold and not (
-                    placement_left == BudsPlacementStatus.case or
-                    placement_right == BudsPlacementStatus.case
-            ):
-                battery_display = f"{combined_level}"
-            # notify on battery drift, but only if the buds aren't on the case and only notify until threshold * 2.
-            elif self.battery_drift_threshold < drift <= self.battery_drift_threshold * 2 and not (
-                    placement_left == BudsPlacementStatus.case or
-                    placement_right == BudsPlacementStatus.case
-            ) and self.enable_notifications:
-                notification = DesktopNotification(
-                    title="Buds",
-                    body=f"Battery drift occurred L{left_battery} {right_battery}R",
-                    icon="battery",
-                    urgency=1
-                )
-                notification.display()
-
-        return battery_display, combined_level
+        pass
 
     def battery_case_display(self, battery_case, left_battery, right_battery, placement_left, placement_right):
         # determine if the battery case should be displayed
-        battery_case_display = ""
-        if placement_left == BudsPlacementStatus.case or placement_right == BudsPlacementStatus.case:
-            battery_case_display = f' {battery_case}{self.battery_case_symbol}'
-
-            # notify when both buds have same battery level but just one is on the case
-            if (abs(left_battery - right_battery) == 0
-                    and not (placement_left == BudsPlacementStatus.case and placement_right == BudsPlacementStatus.case)
-                    and self.enable_notifications):
-                notification = DesktopNotification(
-                    title="Buds",
-                    body=f"Battery level reached L{left_battery} {right_battery}R",
-                    icon="battery",
-                    urgency=1
-                )
-                notification.display()
-
-        return battery_case_display
+        pass
 
     def connect(self):
-        run_through_shell(f"{self.earbuds_binary} connect")
+        pass
 
     def disconnect(self):
-        run_through_shell(f"{self.earbuds_binary} disconnect")
+        pass
 
     def equalizer_set(self, adjustment):
-        payload = self.run()
-        if payload:
-            current_eq = int(payload.get("equalizer_type", 0))  # Default to 0 if not found
-
-            if isinstance(adjustment, BudsEqualizer):
-                new_eq_value = adjustment.value
-            else:  # Adjustment is -1 or +1
-                # Calculate new equalizer setting, ensuring it wraps correctly within bounds
-                new_eq_value = (current_eq + adjustment) % len(BudsEqualizer)
-
-            # Find the enum member corresponding to the new equalizer value
-            new_eq_setting = BudsEqualizer(new_eq_value)
-
-            # Execute the command with the new equalizer setting
-            run_through_shell(f"{self.earbuds_binary} set equalizer {new_eq_setting.name}")
+        pass
 
     def restart_daemon(self):
-        run_through_shell(f"{self.earbuds_binary} -kd")
+        pass
 
     def toggle_amb(self):
-        payload = self.run()
-        if payload:
-            amb = payload.get("ambient_sound_enabled")
-            if amb:
-                run_through_shell(f"{self.earbuds_binary} set ambientsound 0")
-            else:
-                run_through_shell(f"{self.earbuds_binary} set ambientsound 1")
+        pass
 
     def toggle_anc(self):
-        payload = self.run()
-        if payload:
-            anc = payload.get("noise_reduction")
-            if anc:
-                run_through_shell(f"{self.earbuds_binary} set anc false")
-            else:
-                run_through_shell(f"{self.earbuds_binary} set anc true")
+        pass
 
     @staticmethod
     def touchpad_lock_status(tab_lock_status):
         # determine touchpad lock status
-        touchpad = ""
-        if tab_lock_status:
-            touch_an_hold_on = tab_lock_status.get("touch_an_hold_on")
-            tap_on = tab_lock_status.get("tap_on")
-            if not touch_an_hold_on and not tap_on:
-                touchpad = " TL"
-
-        return touchpad
+        pass
 
     def touchpad_set(self, setting):
-        run_through_shell(f"{self.earbuds_binary} set touchpad {setting}")
+        pass
 
     def translate_placement(self, placement):
-        mapping = {
-            BudsPlacementStatus.wearing.value: self.wearing_symbol,
-            BudsPlacementStatus.idle.value: self.idle_symbol,
-            BudsPlacementStatus.case.value: self.case_symbol,
-        }
-        return mapping.get(placement, "?")
+        pass

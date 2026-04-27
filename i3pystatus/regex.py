@@ -21,11 +21,7 @@ class Regex(IntervalModule):
     required = ("regex", "file")
 
     def init(self):
-        self.re = re.compile(self.regex, self.flags)
+        pass
 
     def run(self):
-        with open(self.file, "r") as f:
-            match = self.re.search(f.read())
-            self.output = {
-                "full_text": self.format.format(*match.groups()),
-            }
+        pass

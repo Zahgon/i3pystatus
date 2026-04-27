@@ -24,32 +24,17 @@ class Thunderbird(Backend):
     _unread = set()
 
     def init(self):
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        bus = dbus.SessionBus()
-        bus.add_signal_receiver(self.new_msg,
-                                dbus_interface="org.mozilla.thunderbird.DBus",
-                                signal_name="NewMessageSignal")
-        bus.add_signal_receiver(self.changed_msg,
-                                dbus_interface="org.mozilla.thunderbird.DBus",
-                                signal_name="ChangedMessageSignal")
-        loop = GObject.MainLoop()
-        dbus.mainloop.glib.threads_init()
-        self.context = loop.get_context()
-
-        self.run = partial(self.context.iteration, False)
+        pass
 
     def new_msg(self, id, author, subject):
-        if id not in self._unread:
-            self._unread.add(id)
+        pass
 
     def changed_msg(self, id, event):
-        if event == "read" and id in self._unread:
-            self._unread.remove(id)
+        pass
 
     @property
     def unread(self):
-        self.run()
-        return len(self._unread)
+        pass
 
 
 Backend = Thunderbird

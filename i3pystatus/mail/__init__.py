@@ -49,48 +49,16 @@ class Mail(IntervalModule):
     current_backend = 0
 
     def init(self):
-        for backend in self.backends:
-            pass
+        pass
 
     def run(self):
         """
         Returns the sum of unread messages across all registered backends
         """
-        unread = 0
-        current_unread = 0
-        for id, backend in enumerate(self.backends):
-            temp = backend.unread or 0
-            unread = unread + temp
-            if id == self.current_backend:
-                current_unread = temp
-
-        if not unread:
-            color = self.color
-            urgent = "false"
-            if self.hide_if_null:
-                self.output = None
-                return
-        else:
-            color = self.color_unread
-            urgent = "true"
-
-        format = self.format
-        if unread > 1:
-            format = self.format_plural
-
-        account_name = getattr(self.backends[self.current_backend], "account", "No name")
-
-        self.output = {
-            "full_text": format.format(unread=unread, current_unread=current_unread, account=account_name),
-            "urgent": urgent,
-            "color": color,
-        }
+        pass
 
     def scroll_backend(self, step):
-        self.current_backend = (self.current_backend + step) % len(self.backends)
+        pass
 
     def open_client(self):
-        if self.email_client:
-            retcode, _, stderr = run_through_shell(self.email_client)
-            if retcode != 0 and stderr:
-                self.logger.error(stderr)
+        pass

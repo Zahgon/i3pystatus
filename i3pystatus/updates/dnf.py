@@ -51,23 +51,7 @@ class Dnf(Backend):
 
     @property
     def updates(self):
-        if HAS_DNF_BINDINGS:
-            try:
-                with dnf.Base() as base:
-                    base.read_all_repos()
-                    base.fill_sack()
-                    upgrades = base.sack.query().upgrades().run()
-
-                notif_body = ''.join([
-                    '%s: %s-%s\n' % (pkg.name, pkg.version, pkg.release)
-                    for pkg in upgrades
-                ])
-                return len(upgrades), notif_body
-            except Exception as exc:
-                self.logger.error('DNF update check failed', exc_info=True)
-                return '?', exc.__str__()
-        else:
-            return '?', 'Failed to import DNF Python bindings'
+        pass
 
 Backend = Dnf
 

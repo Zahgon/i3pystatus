@@ -15,8 +15,4 @@ class Text(Module):
     color = None
 
     def init(self):
-        self.output = {
-            "full_text": self.text
-        }
-        if self.color:
-            self.output["color"] = self.color
+        pass

@@ -88,160 +88,22 @@ class Wunderground(WeatherBackend):
     }
 
     def init(self):
-        self.units_type = 'm' if self.units == 'metric' else 'e'
-        self.headers['Referer'] = self.conditions_url = f'https://www.wunderground.com/weather/{self.location_code}'
+        pass
 
     @require(internet)
     def get_api_key(self):
         '''
         Grab the API key out of the page source from the home page
         '''
-        url = 'https://www.wunderground.com'
-        try:
-            page_source = self.http_request(
-                url,
-                headers={
-                    'User-Agent': self.headers['User-Agent'],
-                    'Accept-Language': self.headers['Accept-Language'],
-                    'Conncetion': self.headers['Connection'],
-                },
-            )
-        except Exception as exc:
-            self.logger.exception(f'Failed to load {url}')
-        else:
-            self.logger.debug('Scanning page source for embedded API keys')
-            for key_match in re.finditer(r'apiKey=([0-9a-f]+)', page_source):
-                self.api_key = key_match.group(1)
-                self.logger.debug(f'Checking if {self.api_key} works')
-                if self.api_request(self.observation_url.format(**vars(self))):
-                    break
-            else:
-                self.logger.error('Failed to find API key in mainpage source')
-                self.api_key = None
+        pass
 
     @require(internet)
     def api_request(self, url, headers=None):
-        if headers is None:
-            headers = {}
-        return super(Wunderground, self).api_request(
-            url,
-            headers=dict([(k, v.format(**vars(self))) for k, v in headers.items()]))
+        pass
 
     @require(internet)
     def check_weather(self):
         '''
         Query the desired station and return the weather data
         '''
-        # Get the API key from the page source
-        self.get_api_key()
-        if self.api_key is None:
-            self.data['update_error'] = self.update_error
-            return
-
-        self.data['update_error'] = ''
-        try:
-            try:
-                observation = self.api_request(
-                    self.observation_url.format(**vars(self))
-                )['observations'][0]
-            except (IndexError, KeyError):
-                self.logger.error(
-                    'Failed to retrieve observation data from API response. '
-                    'Run module with debug logging to get more information.'
-                )
-                self.data['update_error'] = self.update_error
-                return
-
-            self.lat = observation['lat']
-            self.lon = observation['lon']
-
-            forecast = self.api_request(self.forecast_url.format(**vars(self)))
-
-            try:
-                overview = self.api_request(self.overview_url.format(**vars(self)))[0]
-            except IndexError:
-                self.logger.error(
-                    'Failed to retrieve overview data from API response. '
-                    'Run module with debug logging to get more information.'
-                )
-                self.data['update_error'] = self.update_error
-                return
-
-            if self.units == 'metric':
-                temp_unit = '°C'
-                speed_unit = 'kph'
-                distance_unit = 'km'
-                pressure_unit = 'mb'
-            else:
-                temp_unit = '°F'
-                speed_unit = 'mph'
-                distance_unit = 'mi'
-                pressure_unit = 'in'
-
-            try:
-                observation_time_str = observation.get('obsTimeLocal', '')
-                observation_time = datetime.strptime(observation_time_str,
-                                                     '%Y-%m-%d %H:%M:%S')
-            except (ValueError, AttributeError):
-                observation_time = datetime.fromtimestamp(0)
-
-            def _find(path, data, default=''):
-                ptr = data
-                for item in path.split(':'):
-                    if item == 'units':
-                        item = self.units
-                    # self.logger.debug(f'item = {item}')
-                    try:
-                        ptr = ptr[item]
-                    except (KeyError, TypeError):
-                        try:
-                            # Try list index
-                            int_item = int(item)
-                        except (TypeError, ValueError):
-                            return default
-                        else:
-                            if len(item) == len(str(int_item)):
-                                try:
-                                    ptr = ptr[int_item]
-                                    continue
-                                except IndexError:
-                                    return default
-                            else:
-                                return default
-
-                if ptr is None:
-                    return default
-                return str(ptr)
-
-            pressure_tendency = _find(
-                'v3-wx-observations-current:pressureTendencyTrend',
-                overview).lower()
-            pressure_trend = '+' if pressure_tendency == 'rising' else '-'
-
-            self.data['city'] = _find('v3-location-point:location:city', overview)
-            self.data['condition'] = _find('v3-wx-observations-current:wxPhraseMedium', overview)
-            self.data['observation_time'] = observation_time
-            self.data['current_temp'] = _find('units:temp', observation, '0')
-            self.data['low_temp'] = _find('temperatureMin:0', forecast)
-            self.data['high_temp'] = _find('temperatureMax:0', forecast)
-            self.data['temp_unit'] = temp_unit
-            self.data['feelslike'] = _find('units:heatIndex', observation)
-            self.data['dewpoint'] = _find('units:dewpt', observation)
-            self.data['wind_speed'] = _find('units:windSpeed', observation)
-            self.data['wind_unit'] = speed_unit
-            self.data['wind_direction'] = _find('v3-wx-observations-current:windDirectionCardinal', overview)
-            self.data['wind_gust'] = _find('units:windGust', observation)
-            self.data['pressure'] = _find('units:pressure', observation)
-            self.data['pressure_unit'] = pressure_unit
-            self.data['pressure_trend'] = pressure_trend
-            self.data['visibility'] = _find('v3-wx-observations-current:visibility', overview)
-            self.data['visibility_unit'] = distance_unit
-            self.data['humidity'] = _find('humidity', observation)
-            self.data['uv_index'] = _find('uv', observation)
-        except Exception:
-            # Don't let an uncaught exception kill the update thread
-            self.logger.error(
-                'Uncaught error occurred while checking weather. '
-                'Exception follows:', exc_info=True
-            )
-            self.data['update_error'] = self.update_error
+        pass

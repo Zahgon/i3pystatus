@@ -32,17 +32,4 @@ class Ticker(IntervalModule):
 
     def run(self):
 
-        stock = yf.Ticker(self.symbol)
-        tick = stock.info
-
-        if tick['regularMarketPrice'] >= float(self.good_threshold):
-            color = self.good_color
-        elif tick['regularMarketPrice'] <= float(self.bad_threshold):
-            color = self.bad_color
-        else:
-            color = self.caution_color
-
-        self.output = {
-            "full_text": self.format.format(**tick),
-            "color": color
-        }
+        pass

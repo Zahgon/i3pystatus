@@ -80,76 +80,14 @@ class CircleCI(IntervalModule):
     on_leftclick = 'open_build_webpage'
 
     def init(self):
-        self.repo_status = None
-        self.last_build_duration = None
-        self.last_build_started = None
-        self.repo_owner, self.repo_name = self.repo_slug.split('/')
-
-        self.workflows = self.workflow_name is not None or self.workflow_branch is not None
+        pass
 
     def _format_time(self, time):
-        _datetime = dateutil.parser.parse(time)
-        return _datetime.strftime(self.time_format)
+        pass
 
     @require(internet)
     def run(self):
-        if self.circleci is None:
-            self.circleci = Api(self.circleci_token)
-
-        if self.workflows:
-            if self.workflow_branch and not self.workflow_name:
-                self.output = dict(
-                    full_text='workflow_name must be specified!'
-                )
-                return
-
-            project = {p['reponame']: p for p in self.circleci.get_projects()}.get(self.repo_name)
-            if not self.workflow_branch:
-                self.workflow_branch = project.get('default_branch')
-
-            workflow_info = project['branches'].get(self.workflow_branch)['latest_workflows'].get(self.workflow_name)
-
-            self.last_build_started = self._format_time(workflow_info.get('created_at'))
-            self.repo_status = workflow_info.get('status')
-
-            self.last_build_duration = ''  # TODO: gather this information once circleCI exposes it
-
-        else:
-            self.repo_summary = self.circleci.get_project_build_summary(
-                self.repo_owner,
-                self.repo_name,
-                limit=1)
-            if len(self.repo_summary) != 1:
-                return
-            self.repo_summary = self.repo_summary[0]
-
-            self.repo_status = self.repo_summary.get('status')
-
-            self.last_build_started = self._format_time(self.repo_summary.get('queued_at'))
-            try:
-                self.last_build_duration = TimeWrapper(
-                    self.repo_summary.get('build_time_millis') / 1000,
-                    default_format=self.duration_format)
-            except TypeError:
-                self.last_build_duration = 0
-
-        if self.repo_status_map:
-            self.repo_status = self.repo_status_map.get(self.repo_status, self.repo_status)
-
-        self.output = dict(
-            full_text=formatp(self.format, **vars(self)),
-            short_text=self.short_format.format(**vars(self)),
-        )
-        if self.status_color_map:
-            self.output['color'] = self.status_color_map.get(self.repo_status, self.color)
-        else:
-            self.output['color'] = self.color
+        pass
 
     def open_build_webpage(self):
-        if self.repo_summary.get('workflows'):
-            url_format = 'workflow-run/{}'.format(self.repo_summary['workflows']['workflow_id'])
-        else:
-            url_format = 'gh/{repo_owner}/{repo_name}/{job_number}'
-
-        os.popen('xdg-open https:/circleci.com/{} > /dev/null'
-                 .format(url_format))
+        pass

@@ -39,32 +39,4 @@ class GPUMemory(IntervalModule):
     gpu_number = 0
 
     def run(self):
-        info = gpu.query_nvidia_smi(self.gpu_number)
-
-        if info.used_mem is not None and info.total_mem is not None:
-            mem_percent = 100 * info.used_mem / info.total_mem
-        else:
-            mem_percent = None
-
-        if mem_percent >= self.alert_percentage:
-            color = self.alert_color
-        elif mem_percent >= self.warn_percentage:
-            color = self.warn_color
-        else:
-            color = self.color
-
-        cdict = {
-            "used_mem": info.used_mem / self.divisor,
-            "avail_mem": info.avail_mem / self.divisor,
-            "total_mem": info.total_mem / self.divisor,
-            "percent_used_mem": mem_percent,
-        }
-        for key, value in cdict.items():
-            if value is not None:
-                cdict[key] = round(value, self.round_size)
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": color
-        }
+        pass

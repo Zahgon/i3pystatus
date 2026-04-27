@@ -16,8 +16,7 @@ class MaildirMail(Backend):
 
     @property
     def unread(self):
-        path = os.path.join(self.directory, "new")
-        return len(os.listdir(path))
+        pass
 
 
 Backend = MaildirMail

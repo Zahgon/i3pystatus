@@ -11,9 +11,7 @@ class Auracle(Backend):
 
     @property
     def updates(self):
-        command = ["auracle", "sync"]
-        auracle = run_through_shell(command)
-        return auracle.out.count('\n'), auracle.out
+        pass
 
 Backend = Auracle
 

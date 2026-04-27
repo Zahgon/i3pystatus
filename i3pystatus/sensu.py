@@ -43,74 +43,16 @@ class SensuCheck(IntervalModule):
     max_event_field = 50
 
     def run(self):
-        try:
-            auth = ()
-            if self.api_username:
-                auth = (self.api_username, self.api_password or "")
-
-            response = requests.get(urljoin(self.api_url, "events"), auth=auth)
-            if response.status_code != requests.codes.OK:
-                self.error("could not query sensu api: {}".format(response.status_code))
-            else:
-                try:
-                    events = response.json()
-                except ValueError:
-                    self.error("could not decode json")
-                else:
-                    try:
-                        self.set_output(events)
-                    except KeyError as exc:
-                        self.error("could not find field {!s} in event".format(exc))
-        except Exception as exc:
-            self.output = {
-                "full_text": "FAILED: {!s}".format(str(exc)),
-                "color": self.color_error,
-            }
+        pass
 
     def set_output(self, events):
-        events = sorted(
-            [e for e in events if e["action"] != "resolve" and not e["silenced"]],
-            key=lambda x: x["last_ok"],
-            reverse=True
-        )
-
-        last_event_output = ""
-        if not events:
-            status = "OK"
-            color = self.color_ok
-        else:
-            error = None
-            try:
-                error = next(e for e in events if e["check"]["status"] == SensuStatus.critical)
-            except StopIteration:
-                last_event = events[0]
-            else:
-                last_event = error
-
-            status = "{} event(s)".format(len(events))
-            color = self.color_error if error else self.color_warn
-            last_event_output = self.get_event_output(last_event)
-
-        self.output = {
-            "full_text": formatp(self.format, status=status, last_event=last_event_output),
-            "color": color,
-        }
+        pass
 
     def get_event_output(self, event):
-        output = (event["check"]["output"] or "").replace("\n", " ")
-        if self.last_event_label:
-            output = "{} {}".format(self.last_event_label, output)
-
-        if self.max_event_field and len(output) > self.max_event_field:
-            output = output[:self.max_event_field]
-
-        return output
+        pass
 
     def error(self, error_msg):
-        self.output = {
-            "full_text": error_msg,
-            "color": self.color_error,
-        }
+        pass
 
 
 class SensuStatus(IntEnum):

@@ -13,41 +13,14 @@ class WeatherBackend(SettingsBase):
 
     @require(internet)
     def http_request(self, url, headers=None):
-        req = Request(url, headers=headers or {})
-        with urlopen(req) as content:
-            try:
-                content_type = dict(content.getheaders())['Content-Type']
-                charset = re.search(r'charset=(.*)', content_type).group(1)
-            except AttributeError:
-                charset = 'utf-8'
-            return content.read().decode(charset)
+        pass
 
     @require(internet)
     def api_request(self, url, headers=None):
-        self.logger.debug(f'Making API request to {url}')
-        try:
-            response_json = self.http_request(url, headers=headers).strip()
-            if not response_json:
-                self.logger.debug(f'JSON response from {url} was blank')
-                return {}
-            try:
-                response = json.loads(response_json)
-            except json.decoder.JSONDecodeError as exc:
-                self.logger.error(f'Error loading JSON: {exc}')
-                self.logger.debug(f'JSON text that failed to load: {response_json}')
-                return {}
-            self.logger.log(5, f'API response: {response}')
-            error = self.check_response(response)
-            if error:
-                self.logger.error(f'Error in JSON response: {error}')
-                return {}
-            return response
-        except Exception as exc:
-            self.logger.exception(f'Failed to make API request to {url}')
-            return {}
+        pass
 
     def check_response(self, response):
-        return False
+        pass
 
 
 class Weather(IntervalModule):
@@ -62,34 +35,34 @@ class Weather(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{city}` — Location of weather observation
-    * `{condition}` — Current weather condition (Rain, Snow, Overcast, etc.)
-    * `{icon}` — Icon representing the current weather condition
-    * `{observation_time}` — Time of weather observation (supports strftime format flags)
-    * `{current_temp}` — Current temperature, excluding unit
-    * `{low_temp}` — Forecasted low temperature, excluding unit
-    * `{high_temp}` — Forecasted high temperature, excluding unit (may be
+    * `{city}` â€” Location of weather observation
+    * `{condition}` â€” Current weather condition (Rain, Snow, Overcast, etc.)
+    * `{icon}` â€” Icon representing the current weather condition
+    * `{observation_time}` â€” Time of weather observation (supports strftime format flags)
+    * `{current_temp}` â€” Current temperature, excluding unit
+    * `{low_temp}` â€” Forecasted low temperature, excluding unit
+    * `{high_temp}` â€” Forecasted high temperature, excluding unit (may be
       empty in the late afternoon)
-    * `{temp_unit}` — Either ``°C`` or ``°F``, depending on whether metric or
-    * `{feelslike}` — "Feels Like" temperature, excluding unit
-    * `{dewpoint}` — Dewpoint temperature, excluding unit
+    * `{temp_unit}` â€” Either ``Â°C`` or ``Â°F``, depending on whether metric or
+    * `{feelslike}` â€” "Feels Like" temperature, excluding unit
+    * `{dewpoint}` â€” Dewpoint temperature, excluding unit
       imperial units are being used
-    * `{wind_speed}` — Wind speed, excluding unit
-    * `{wind_unit}` — Either ``kph`` or ``mph``, depending on whether metric or
+    * `{wind_speed}` â€” Wind speed, excluding unit
+    * `{wind_unit}` â€” Either ``kph`` or ``mph``, depending on whether metric or
       imperial units are being used
-    * `{wind_direction}` — Wind direction
-    * `{wind_gust}` — Speed of wind gusts in mph/kph, excluding unit
-    * `{pressure}` — Barometric pressure, excluding unit
-    * `{pressure_unit}` — ``mb`` or ``in``, depending on whether metric or
+    * `{wind_direction}` â€” Wind direction
+    * `{wind_gust}` â€” Speed of wind gusts in mph/kph, excluding unit
+    * `{pressure}` â€” Barometric pressure, excluding unit
+    * `{pressure_unit}` â€” ``mb`` or ``in``, depending on whether metric or
       imperial units are being used
-    * `{pressure_trend}` — ``+`` if rising, ``-`` if falling, or an empty
+    * `{pressure_trend}` â€” ``+`` if rising, ``-`` if falling, or an empty
       string if the pressure is steady (neither rising nor falling)
-    * `{visibility}` — Visibility distance, excluding unit
-    * `{visibility_unit}` — Either ``km`` or ``mi``, depending on whether
+    * `{visibility}` â€” Visibility distance, excluding unit
+    * `{visibility_unit}` â€” Either ``km`` or ``mi``, depending on whether
       metric or imperial units are being used
-    * `{humidity}` — Current humidity, excluding percentage symbol
-    * `{uv_index}` — UV Index
-    * `{update_error}` — When the configured weather backend encounters an
+    * `{humidity}` â€” Current humidity, excluding percentage symbol
+    * `{uv_index}` â€” UV Index
+    * `{update_error}` â€” When the configured weather backend encounters an
       error during an update, this formatter will be set to the value of the
       backend's **update_error** config value. Otherwise, this formatter will
       be an empty string.
@@ -181,7 +154,7 @@ class Weather(IntervalModule):
     interval = 1800
     offline_interval = 300
     online_interval = None
-    refresh_icon = '⟳'
+    refresh_icon = 'âŸ³'
     format = '{current_temp}{temp_unit}[ {update_error}]'
 
     output = {'full_text': ''}
@@ -190,117 +163,29 @@ class Weather(IntervalModule):
     on_leftclick = ['check_weather']
 
     def launch_web(self):
-        if self.backend.conditions_url and self.backend.conditions_url != 'N/A':
-            self.logger.debug(f'Launching {self.backend.conditions_url} in browser')
-            user_open(self.backend.conditions_url)
+        pass
 
     def init(self):
-        if self.online_interval is None:
-            self.online_interval = int(self.interval)
-
-        if self.backend is None:
-            raise RuntimeError('A backend is required')
-
-        self.backend.data = {
-            'city': '',
-            'condition': '',
-            'observation_time': '',
-            'current_temp': '',
-            'low_temp': '',
-            'high_temp': '',
-            'temp_unit': '',
-            'feelslike': '',
-            'dewpoint': '',
-            'wind_speed': '',
-            'wind_unit': '',
-            'wind_direction': '',
-            'wind_gust': '',
-            'pressure': '',
-            'pressure_unit': '',
-            'pressure_trend': '',
-            'visibility': '',
-            'visibility_unit': '',
-            'humidity': '',
-            'uv_index': '',
-            'update_error': '',
-        }
-
-        self.backend.init()
-
-        self.condition = threading.Condition()
-        self.thread = threading.Thread(target=self.update_thread, daemon=True)
-        self.thread.start()
+        pass
 
     def update_thread(self):
-        if internet():
-            self.interval = self.online_interval
-        else:
-            self.interval = self.offline_interval
-        try:
-            self.check_weather()
-            while True:
-                with self.condition:
-                    self.condition.wait(self.interval)
-                self.check_weather()
-        except Exception:
-            msg = 'Exception in {thread} at {time}, module {name}'.format(
-                thread=threading.current_thread().name,
-                time=time.strftime('%c'),
-                name=self.__class__.__name__,
-            )
-            self.logger.error(msg, exc_info=True)
+        pass
 
     def check_weather(self):
         '''
         Check the weather using the configured backend
         '''
-        self.output['full_text'] = \
-            self.refresh_icon + self.output.get('full_text', '')
-        self.backend.check_weather()
-        self.refresh_display()
+        pass
 
     def get_color_data(self, condition):
         '''
         Disambiguate similarly-named weather conditions, and return the icon
         and color that match.
         '''
-        if condition not in self.color_icons:
-            # Check for similarly-named conditions if no exact match found
-            condition_lc = condition.lower()
-            if 'cloudy' in condition_lc or 'clouds' in condition_lc:
-                if 'partly' in condition_lc:
-                    condition = 'Partly Cloudy'
-                else:
-                    condition = 'Cloudy'
-            elif condition_lc == 'overcast':
-                condition = 'Cloudy'
-            elif 'thunder' in condition_lc or 't-storm' in condition_lc:
-                condition = 'Thunderstorm'
-            elif 'snow' in condition_lc:
-                condition = 'Snow'
-            elif 'rain' in condition_lc or 'showers' in condition_lc:
-                condition = 'Rainy'
-            elif 'sunny' in condition_lc:
-                condition = 'Sunny'
-            elif 'clear' in condition_lc or 'fair' in condition_lc:
-                condition = 'Fair'
-            elif 'fog' in condition_lc:
-                condition = 'Fog'
-
-        return self.color_icons['default'] \
-            if condition not in self.color_icons \
-            else self.color_icons[condition]
+        pass
 
     def refresh_display(self):
-        self.logger.debug(f'Weather data: {self.backend.data}')
-        self.backend.data['icon'], condition_color = \
-            self.get_color_data(self.backend.data['condition'])
-        color = condition_color if self.colorize else self.color
-
-        self.output = {
-            'full_text': formatp(self.format, **self.backend.data).strip(),
-            'color': color,
-        }
+        pass
 
     def run(self):
         pass

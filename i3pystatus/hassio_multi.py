@@ -19,13 +19,13 @@ class HassioMulti(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * ``{friendly_name}`` — friendly name of current entity
-    * ``{entity_id}`` — entity ID
-    * ``{state}`` — current state
-    * ``{last_change}`` — last state change time
-    * ``{last_update}`` — last update time
-    * ``{entity_index}`` — current entity index (1-based)
-    * ``{entity_count}`` — total number of entities
+    * ``{friendly_name}`` â€” friendly name of current entity
+    * ``{entity_id}`` â€” entity ID
+    * ``{state}`` â€” current state
+    * ``{last_change}`` â€” last state change time
+    * ``{last_update}`` â€” last update time
+    * ``{entity_index}`` â€” current entity index (1-based)
+    * ``{entity_count}`` â€” total number of entities
     * Any entity attribute (e.g., ``{current_temperature}``, ``{brightness}``)
 
     .. rubric:: Example usage
@@ -71,105 +71,36 @@ class HassioMulti(IntervalModule):
     _entities_data = []
 
     def _get_headers(self):
-        return {
-            "content-type": "application/json",
-            "Authorization": "Bearer %s" % self.hassio_token
-        }
+        pass
 
     def _fetch_all_states(self):
         """Fetch all entity states in one API call"""
-        url = "%s/api/states" % self.hassio_url
-        response = get(url, headers=self._get_headers())
-        all_states = json.loads(response.text)
-
-        # Filter to only the entities we care about
-        entity_map = {e['entity_id']: e for e in all_states}
-        result = []
-        for eid in self.entity_ids:
-            if eid in entity_map:
-                result.append(entity_map[eid])
-        return result
+        pass
 
     def run(self):
-        self._entities_data = self._fetch_all_states()
-
-        if not self._entities_data:
-            self.output = {
-                "full_text": "No entities found",
-                "color": self.bad_color
-            }
-            return
-
-        # Filter out hidden entities for display
-        visible_entities = [
-            e for e in self._entities_data
-            if e['state'] != self.hide_state
-        ]
-
-        if not visible_entities:
-            self.output = {"full_text": ''}
-            return
-
-        # Ensure index is valid
-        self._entity_index = self._entity_index % len(visible_entities)
-        entity = visible_entities[self._entity_index]
-
-        # Start with all entity attributes
-        cdict = dict(entity.get('attributes', {}))
-
-        # Add/override with standard fields
-        cdict.update({
-            "friendly_name": entity['attributes'].get('friendly_name') or entity['entity_id'],
-            "entity_id": entity['entity_id'],
-            "last_change": entity.get('last_changed') or None,
-            "last_update": entity.get('last_updated') or None,
-            "state": entity['state'],
-            "entity_index": self._entity_index + 1,
-            "entity_count": len(visible_entities),
-        })
-
-        color = self.good_color if entity['state'] == self.desired_state else self.bad_color
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": color
-        }
+        pass
 
     def _get_current_entity_id(self):
         """Get the entity_id of the currently displayed entity"""
-        visible = [e for e in self._entities_data if e['state'] != self.hide_state]
-        if visible and self._entity_index < len(visible):
-            return visible[self._entity_index]['entity_id']
-        return None
+        pass
 
     def next_entity(self):
         """Cycle to next entity"""
-        visible = [e for e in self._entities_data if e['state'] != self.hide_state]
-        if visible:
-            self._entity_index = (self._entity_index + 1) % len(visible)
+        pass
 
     def prev_entity(self):
         """Cycle to previous entity"""
-        visible = [e for e in self._entities_data if e['state'] != self.hide_state]
-        if visible:
-            self._entity_index = (self._entity_index - 1) % len(visible)
+        pass
 
     def toggle(self):
         """Toggle the current entity state"""
-        entity_id = self._get_current_entity_id()
-        if entity_id:
-            domain = entity_id.split('.')[0]
-            url = "%s/api/services/%s/toggle" % (self.hassio_url, domain)
-            post(url, headers=self._get_headers(), json={"entity_id": entity_id})
+        pass
 
     def refresh(self):
         """Force refresh all entities"""
-        self.run()
+        pass
 
     def open_dashboard(self):
         """Open the Home Assistant dashboard in a browser"""
-        subprocess.Popen(
-            [self.browser_cmd, self.hassio_url],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+        pass
 

@@ -24,7 +24,7 @@ class Updates(Module):
 
     .. rubric:: Available formatters
 
-    * `{count}` — Sum of all available updates from all backends.
+    * `{count}` â€” Sum of all available updates from all backends.
     * For each backend registered there is one formatter named after the
       backend, multiple identical backends do not accumulate, but overwrite
       each other.
@@ -86,75 +86,17 @@ class Updates(Module):
     on_rightclick = "report"
 
     def init(self):
-        if not isinstance(self.backends, list):
-            self.backends = [self.backends]
-        if self.format_working is None:  # we want to allow an empty format
-            self.format_working = self.format
-        if self.format_summary is None:  # we want to allow an empty format
-            self.format_summary = self.format
-        self.color_working = self.color_working or self.color
-        self.data = {
-            "count": 0
-        }
-        self.notif_body = {}
-        self.condition = threading.Condition()
-        self.thread = threading.Thread(target=self.update_thread, daemon=True)
-        self.thread.start()
+        pass
 
     def update_thread(self):
-        self.check_updates()
-        while True:
-            with self.condition:
-                self.condition.wait(self.interval)
-            self.check_updates()
+        pass
 
     @require(internet)
     def check_updates(self):
-        for backend in self.backends:
-            key = backend.__class__.__name__
-            if key not in self.data:
-                self.data[key] = "?"
-            if key not in self.notif_body:
-                self.notif_body[key] = ""
-
-        self.output = {
-            "full_text": formatp(self.format_working, **self.data).strip(),
-            "color": self.color_working,
-        }
-
-        updates_count = 0
-        for backend in self.backends:
-            name = backend.__class__.__name__
-            updates, notif_body = backend.updates
-            try:
-                updates_count += updates
-            except TypeError:
-                pass
-            self.data[name] = updates
-            self.notif_body[name] = notif_body or ""
-
-        if updates_count == 0:
-            self.output = {} if not self.format_no_updates else {
-                "full_text": self.format_no_updates,
-                "color": self.color_no_updates,
-            }
-            return
-
-        self.data["count"] = updates_count
-        self.output = {
-            "full_text": formatp(self.format, **self.data).strip(),
-            "color": self.color,
-        }
+        pass
 
     def run(self):
-        with self.condition:
-            self.condition.notify()
+        pass
 
     def report(self):
-        DesktopNotification(
-            title=formatp(self.format_summary, **self.data).strip(),
-            body="\n".join(self.notif_body.values()),
-            icon=self.notification_icon,
-            urgency=1,
-            timeout=0,
-        ).display()
+        pass

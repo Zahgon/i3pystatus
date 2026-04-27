@@ -33,25 +33,16 @@ class Pianobar(IntervalModule):
     on_downscroll = "decrease_volume"
 
     def run(self):
-        with open(self.songfile, "r") as f:
-            contents = f.readlines()
-
-        sn = contents[0].strip()
-        sa = contents[1].strip()
-
-        self.output = {
-            "full_text": self.format.format(songtitle=sn, songartist=sa),
-            "color": self.color
-        }
+        pass
 
     def playpause(self):
-        open(self.ctlfile, "w").write("p")
+        pass
 
     def next_song(self):
-        open(self.ctlfile, "w").write("n")
+        pass
 
     def increase_volume(self):
-        open(self.ctlfile, "w").write(")")
+        pass
 
     def decrease_volume(self):
-        open(self.ctlfile, "w").write("(")
+        pass

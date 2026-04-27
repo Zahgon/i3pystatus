@@ -15,17 +15,17 @@ class Wireguard(IntervalModule):
 
     Formatters:
 
-    * {vpn_name} — Same as setting.
-    * {status} — Unicode up or down symbol.
-    * {output} — Output of status_command.
-    * {label} — Label for this connection, if defined.
+    * {vpn_name} â€” Same as setting.
+    * {status} â€” Unicode up or down symbol.
+    * {output} â€” Output of status_command.
+    * {label} â€” Label for this connection, if defined.
 
     """
 
     color_up = "#00ff00"
     color_down = "#FF0000"
-    status_up = '▲'
-    status_down = '▼'
+    status_up = 'â–²'
+    status_down = 'â–¼'
     format = "{vpn_name} {status}"
 
     status_command = "systemctl is-active wg-quick@{vpn_name}"
@@ -49,33 +49,13 @@ class Wireguard(IntervalModule):
     )
 
     def init(self):
-        if not self.vpn_name:
-            raise Exception("vpn_name is required")
+        pass
 
     def toggle_connection(self):
-        if self.connected:
-            command = self.vpn_down_command
-        else:
-            command = self.vpn_up_command
-        run_through_shell(command.format(vpn_name=self.vpn_name))
+        pass
 
     def on_click(self, button, **kwargs):
-        self.toggle_connection()
+        pass
 
     def run(self):
-        command_result = run_through_shell(self.status_command.format(vpn_name=self.vpn_name))
-        self.connected = command_result.rc == 0
-
-        if self.connected:
-            color, status = self.color_up, self.status_up
-        else:
-            color, status = self.color_down, self.status_down
-
-        vpn_name = self.vpn_name
-        label = self.label
-
-        self.data = locals()
-        self.output = {
-            "full_text": self.format.format(**self.data),
-            'color': color,
-        }
+        pass

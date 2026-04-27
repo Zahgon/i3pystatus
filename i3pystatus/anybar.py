@@ -40,27 +40,10 @@ class AnyBar(IntervalModule):
 
     def main_loop(self):
         """ Mainloop blocks so we thread it."""
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        port = int(getattr(self, 'port', 1738))
-        sock.bind(('127.0.0.1', port))
-        while True:
-            data, addr = sock.recvfrom(512)
-            color = data.decode().strip()
-            self.color = self.colors.get(color, color)
+        pass
 
     def init(self):
-        try:
-            t = threading.Thread(target=self.main_loop)
-            t.daemon = True
-            t.start()
-        except Exception as e:
-            self.output = {
-                "full_text": "Error creating new thread!",
-                "color": "#AE2525"
-            }
+        pass
 
     def run(self):
-        self.output = {
-            "full_text": "●",
-            "color": self.color
-        }
+        pass

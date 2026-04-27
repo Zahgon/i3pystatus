@@ -18,14 +18,4 @@ class Openfiles(IntervalModule):
 
     def run(self):
 
-        cur_filenr = open(self.filenr_path, 'r')
-        openfiles, unused, maxfiles = cur_filenr.readlines()[0].split()
-        cur_filenr.close()
-
-        cdict = {'openfiles': openfiles,
-                 'maxfiles': maxfiles}
-
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": self.color
-        }
+        pass

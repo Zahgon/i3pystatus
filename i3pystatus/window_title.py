@@ -16,7 +16,7 @@ class WindowTitle(Module):
 
     .. rubric:: Available formaters
 
-    * `{title}`      — title of current focused window
+    * `{title}`      â€” title of current focused window
     * `{class_name}` - name of application class
 
     @author jok
@@ -38,79 +38,20 @@ class WindowTitle(Module):
     color = "#FFFFFF"
 
     def init(self):
-        self.title = self.empty_title
-        self.output = {
-            "full_text": self.title,
-            "color": self.color,
-        }
-
-        # we are listening to i3 events in a separate thread
-        t = Thread(target=self._loop)
-        t.daemon = True
-        t.start()
+        pass
 
     def get_title(self, conn):
-        tree = conn.get_tree()
-        w = tree.find_focused()
-        p = w.parent
-
-        # don't show window title when the window already has means
-        # to display it
-        if (not self.always_show
-            and (w.border == "normal"
-                 or w.type == "workspace"
-                 or (p.layout in ("stacked", "tabbed") and len(p.nodes) > 1))):
-            return self.empty_title
-        else:
-            title = w.name
-            class_name = w.window_class
-            if title is None:
-                title = self.empty_title
-            if len(title) > self.max_width:
-                title = title[:self.max_width - 1] + "…"
-            return self.format.format(title=title, class_name=class_name)
+        pass
 
     def update_title(self, conn, e):
         # catch only focused window title updates
-        title_changed = hasattr(e, "container") and e.container.focused
-
-        # check if we need to update title due to changes
-        # in the workspace layout
-        layout_changed = (
-            hasattr(e, "binding")
-            and (e.binding.command.startswith("layout")
-                 or e.binding.command.startswith("move container")
-                 or e.binding.command.startswith("border"))
-        )
-
-        if title_changed or layout_changed:
-            self.title = self.get_title(conn)
-            self.update_display()
+        pass
 
     def clear_title(self, *args):
-        self.title = self.empty_title
-        self.update_display()
+        pass
 
     def update_display(self):
-        self.output = {
-            "full_text": self.title,
-            "color": self.color,
-        }
+        pass
 
     def _loop(self):
-        conn = i3ipc.Connection()
-        self.title = self.get_title(conn)  # set title on startup
-        self.update_display()
-
-        # The order of following callbacks is important!
-        # clears the title on empty ws
-        conn.on('workspace::focus', self.clear_title)
-
-        # clears the title when the last window on ws was closed
-        conn.on("window::close", self.clear_title)
-
-        # listens for events which can trigger the title update
-        conn.on("window::title", self.update_title)
-        conn.on("window::focus", self.update_title)
-
-        conn.main()  # run the event loop
+        pass

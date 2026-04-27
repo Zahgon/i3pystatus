@@ -32,27 +32,22 @@ class LightningCalendarEvent(CalendarEvent):
 
     @property
     def recurring(self):
-        return (self._flags & Flag.HAS_RECURRENCE) != 0
+        pass
 
     @property
     def end(self):
-        return self._convert_date(self._event_end, self._event_end_tz)
+        pass
 
     @property
     def start(self):
-        return self._convert_date(self._event_start, self._event_start_tz)
+        pass
 
     @formatter
     def location(self):
-        return self._location
+        pass
 
     def _convert_date(self, microseconds_from_epoch, timezone):
-        if timezone == 'floating':
-            tz = tzlocal()
-        else:
-            tz = pytz.timezone(timezone)
-        d = datetime.fromtimestamp(microseconds_from_epoch / 1000000, tz=pytz.UTC)
-        return d.astimezone(tz)
+        pass
 
 
 class Lightning(CalendarBackend):
@@ -61,7 +56,7 @@ class Lightning(CalendarBackend):
 
     .. rubric:: Available formatters
 
-    * `{location}` — Where the event occurs
+    * `{location}` â€” Where the event occurs
     """
 
     settings = (
@@ -76,28 +71,4 @@ class Lightning(CalendarBackend):
     database_path = None
 
     def update(self):
-        with sqlite3.connect(self.database_path) as connection:
-            connection.row_factory = sqlite3.Row
-            cursor = connection.cursor()
-            cursor.execute("""
-                SELECT
-                  id,
-                  title,
-                  event_start,
-                  event_start_tz,
-                  event_end,
-                  event_end_tz,
-                  flags,
-                  cal_properties.value AS location
-                FROM cal_events
-                  LEFT OUTER JOIN cal_properties ON cal_properties.item_id = id AND cal_properties.key = 'LOCATION'
-                WHERE
-                  datetime(event_start / 1000000, 'unixepoch', 'localtime') < datetime('now', 'localtime', '+' || :days || ' days')
-                  AND
-                  datetime(event_start / 1000000, 'unixepoch', 'localtime') > datetime('now', 'localtime')
-                ORDER BY event_start ASC
-            """, dict(days=self.days))
-            self.events.clear()
-            for row in cursor:
-                self.events.append(LightningCalendarEvent(row))
-            cursor.close()
+        pass

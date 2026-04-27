@@ -13,9 +13,9 @@ class Timewarrior(IntervalModule):
 
     Formaters:
 
-    * `{tags}`  — contains tags of current track
+    * `{tags}`  â€” contains tags of current track
     * `{start}` - contains start of track
-    * `{duration}` — contains time of current track
+    * `{duration}` â€” contains time of current track
     """
 
     format = '{duration}'
@@ -37,43 +37,10 @@ class Timewarrior(IntervalModule):
     )
 
     def loadTrack(self):
-        try:
-            tracks_json = subprocess.check_output(['timew', 'export'])
-            tracks = loads(tracks_json.decode("utf-8"))
-            self.track = tracks[-1]
-
-        except ValueError as error:
-            self.logger.exception('Decoding JSON has failed')
-            raise error
+        pass
 
     def stop_or_continue(self):
-        self.loadTrack()
-
-        if 'end' in self.track and self.enable_continue:
-            subprocess.check_output(['timew', 'continue'])
-        elif self.enable_stop:
-            subprocess.check_output(['timew', 'stop'])
+        pass
 
     def run(self):
-        self.loadTrack()
-        start = parse(self.track['start'])
-        end = parse(self.track['end']) if 'end' in self.track else datetime.now(timezone.utc)
-        duration = relativedelta(end, start)
-
-        format_values = dict(
-            tags=", ".join(self.track['tags'] if 'tags' in self.track else []),
-            start=start,
-            duration=self.duration_format.format(
-                years=duration.years,
-                months=duration.months,
-                days=duration.days,
-                hours=duration.hours,
-                minutes=duration.minutes,
-                seconds=duration.seconds,
-            )
-        )
-
-        self.output = {
-            'full_text': self.format.format(**format_values),
-            'color': self.color_stopped if 'end' in self.track else self.color_running
-        }
+        pass

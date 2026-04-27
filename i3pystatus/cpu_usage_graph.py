@@ -14,10 +14,10 @@ class CpuUsageGraph(CpuUsage, ColorRangeModule):
 
      .. rubric:: Available formatters
 
-     * `{cpu_graph}`  — graph of cpu usage.
-     * `{usage}`      — usage average of all cores
-     * `{usage_cpu*}` — usage of one specific core. replace "*" by core number starting at 0
-     * `{usage_all}`  — usage of all cores separate. usess natsort when available(relevant for more than 10 cores)
+     * `{cpu_graph}`  â€” graph of cpu usage.
+     * `{usage}`      â€” usage average of all cores
+     * `{usage_cpu*}` â€” usage of one specific core. replace "*" by core number starting at 0
+     * `{usage_all}`  â€” usage of all cores separate. usess natsort when available(relevant for more than 10 cores)
      """
 
     settings = (
@@ -37,31 +37,7 @@ class CpuUsageGraph(CpuUsage, ColorRangeModule):
     direction = 'left-to-right'
 
     def init(self):
-        super().init()
-        self.cpu_readings = self.graph_width * [0]
-        self.colors = self.get_hex_color_range(self.start_color, self.end_color, int(100))
+        pass
 
     def run(self):
-        format_options = self.get_usage()
-        core_reading = format_options[self.cpu]
-
-        self.cpu_readings.insert(0, core_reading)
-        self.cpu_readings = self.cpu_readings[:self.graph_width]
-
-        graph = make_graph(self.cpu_readings, 0.0, 100.0, self.graph_style)
-
-        if self.direction == "right-to-left":
-            graph = graph[::-1]
-        elif self.direction == "left-to-right":
-            pass
-        else:
-            raise Exception("Invalid direction '%s'." % self.direction)
-
-        format_options.update({'cpu_graph': graph})
-
-        color = self.get_gradient(core_reading, self.colors)
-        self.data = format_options
-        self.output = {
-            "full_text": self.format.format_map(format_options),
-            'color': color
-        }
+        pass

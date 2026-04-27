@@ -9,11 +9,11 @@ class Uname(Module):
 
     .. rubric:: Available formatters
 
-    * `{sysname}` — operating system name
-    * `{nodename}` — name of machine on network (implementation-defined)
-    * `{release}` — operating system release
-    * `{version}` — operating system version
-    * `{machine}` — hardware identifier
+    * `{sysname}` â€” operating system name
+    * `{nodename}` â€” name of machine on network (implementation-defined)
+    * `{release}` â€” operating system release
+    * `{version}` â€” operating system version
+    * `{machine}` â€” hardware identifier
     """
 
     format = "{sysname} {release}"
@@ -22,15 +22,4 @@ class Uname(Module):
     )
 
     def init(self):
-        uname_result = os.uname()
-        fdict = {
-            "sysname": uname_result.sysname,
-            "nodename": uname_result.nodename,
-            "release": uname_result.release,
-            "version": uname_result.version,
-            "machine": uname_result.machine,
-        }
-        self.data = fdict
-        self.output = {
-            "full_text": self.format.format(**fdict),
-        }
+        pass

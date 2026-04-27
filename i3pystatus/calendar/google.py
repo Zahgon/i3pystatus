@@ -27,22 +27,18 @@ class GoogleCalendarEvent(CalendarEvent):
 
     @formatter
     def htmlLink(self):
-        return self._link
+        pass
 
     @formatter
     def status(self):
-        return self._status
+        pass
 
     @formatter
     def kind(self):
-        return self._kind
+        pass
 
     def _parse_date(self, date_section):
-        if 'dateTime' not in date_section:
-            result = parser.parse(date_section['date'])
-        else:
-            result = parser.parse(date_section['dateTime'])
-        return result.replace(tzinfo=timezone.utc).astimezone(tz=None)
+        pass
 
 
 class Google(CalendarBackend):
@@ -61,9 +57,9 @@ class Google(CalendarBackend):
 
     .. rubric:: Available formatters
 
-    * `{kind}` — type of event
-    * `{status}` — eg, confirmed
-    * `{htmlLink}` — link to the calendar event
+    * `{kind}` â€” type of event
+    * `{status}` â€” eg, confirmed
+    * `{htmlLink}` â€” link to the calendar event
     """
 
     settings = (
@@ -78,58 +74,26 @@ class Google(CalendarBackend):
     days = 7
 
     def init(self):
-        self.service = None
-        self.events = []
+        pass
 
     @require(internet)
     def update(self):
-        if self.service is None:
-            self.connect_service()
-        self.refresh_events()
+        pass
 
     def on_click(self, event):
-        user_open(event.htmlLink())
+        pass
 
     def connect_service(self):
-        self.logger.debug("Connecting Service..")
-        store = file_.Storage(self.credential_path)
-        self.credentials = store.get()
-
-        # if the module is being ran for the first time, open up the browser to authenticate
-        if not self.credentials or self.credentials.invalid:
-            flow = client.flow_from_clientsecrets(self.credentials_json, SCOPES)
-            self.credentials = tools.run_flow(flow, store)
-
-        self.service = discovery.build('calendar', 'v3', http=self.credentials.authorize(httplib2.Http()))
+        pass
 
     def refresh_events(self):
         """
         Retrieve the next N events from Google.
         """
-        now = datetime.datetime.now(tz=pytz.UTC)
-        try:
-            now, later = self.get_timerange_formatted(now)
-            events_result = self.service.events().list(
-                calendarId='primary',
-                timeMin=now,
-                timeMax=later,
-                maxResults=10,
-                singleEvents=True,
-                orderBy='startTime',
-                timeZone='utc'
-            ).execute()
-            self.events.clear()
-            for event in events_result.get('items', []):
-                self.events.append(GoogleCalendarEvent(event))
-        except HttpError as e:
-            if e.resp.status in (500, 503):
-                self.logger.warn("GoogleCalendar received %s while retrieving events" % e.resp.status)
-            else:
-                raise
+        pass
 
     def get_timerange_formatted(self, now):
         """
         Return two ISO8601 formatted date strings, one for timeMin, the other for timeMax (to be consumed by get_events)
         """
-        later = now + datetime.timedelta(days=self.days)
-        return now.isoformat(), later.isoformat()
+        pass

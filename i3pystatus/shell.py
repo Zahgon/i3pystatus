@@ -8,7 +8,7 @@ class Shell(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{output}` — just the striped command output without newlines
+    * `{output}` â€” just the striped command output without newlines
     """
 
     color = "#FFFFFF"
@@ -27,21 +27,4 @@ class Shell(IntervalModule):
     format = "{output}"
 
     def run(self):
-        retvalue, out, stderr = run_through_shell(self.command, enable_shell=True)
-
-        if retvalue != 0:
-            self.logger.error(stderr if stderr else "Unknown error")
-
-        if out:
-            out = out.replace("\n", " ").strip()
-        elif stderr:
-            out = stderr
-
-        full_text = self.format.format(output=out).strip()
-        if not full_text and not self.ignore_empty_stdout:
-            full_text = "Command `%s` returned %d" % (self.command, retvalue)
-
-        self.output = {
-            "full_text": full_text,
-            "color": self.color if retvalue == 0 else self.error_color
-        }
+        pass

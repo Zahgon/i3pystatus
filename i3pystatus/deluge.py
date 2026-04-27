@@ -44,84 +44,33 @@ class Deluge(IntervalModule):
     rounding = 2
     offline_string = 'offline'
 
-    format = '⛆{num_torrents} ✇{free_space_bytes}'
+    format = 'â›†{num_torrents} âœ‡{free_space_bytes}'
 
     id = int(time.time())  # something random
 
     def init(self):
-        self.client = DelugeRPCClient(self.host, self.port, self.username, self.password)
-        self.data = {}
+        pass
 
     def run(self):
-        if not self.client.connected:
-            try:
-                self.client.connect()
-            except OSError:
-                self.output = {
-                    'full_text': self.offline_string
-                }
-                return
-
-        try:
-            self.data = self.get_session_statistics()
-
-            torrents = self.get_torrents_status()
-            if torrents:
-                self.data['num_torrents'] = len(torrents)
-
-            if 'free_space_bytes' in self.format:
-                self.data['free_space_bytes'] = self.get_free_space(self.path)
-            if 'used_space_bytes' in self.format:
-                self.data['used_space_bytes'] = self.get_path_size(self.path)
-        except FailedToReconnectException:
-            return
-
-        self.parse_values(self.data)
-
-        self.output = {
-            'full_text': self.format.format(**self.data)
-        }
-        if self.color:
-            self.output['color'] = self.color
+        pass
 
     def parse_values(self, values):
-        for k, v in values.items():
-            if v:
-                if k in ['total_upload', 'total_download', 'download_rate', 'upload_rate'] or k.endswith('_bytes'):
-                    values[k] = '{value:.{round}f}{unit}'.format(round=self.rounding, **bytes_info_dict(v))
+        pass
 
     def get_path_size(self, path=None):
         """
         get used space of path in bytes (default: download location)
         """
-        if path is None:
-            path = []
-        return self.client.call('core.get_path_size', path)
+        pass
 
     def get_free_space(self, path=None):
         """
         get free space of path in bytes (default: download location)
         """
-        if path is None:
-            path = []
-        return self.client.call('core.get_free_space', path)
+        pass
 
     def get_torrents_status(self, torrent_id=None, keys=None):
-        if torrent_id is None:
-            torrent_id = []
-        if keys is None:
-            keys = []
-        return self.client.call('core.get_torrents_status', torrent_id, keys)
+        pass
 
     def get_session_statistics(self):
-        keys = ['upload_rate', 'download_rate', 'total_upload', 'total_download']
-
-        out = {}  # some of the values from deluge-client are bytes, the others are ints - we need to decode them
-        for k, v in self.client.call('core.get_session_status', keys).items():
-            k = k.decode('utf-8')  # keys aswell
-            if type(v) == bytes:
-                out[k] = v.decode('utf-8')
-            else:
-                out[k] = v
-
-        return out
+        pass

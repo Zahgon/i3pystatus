@@ -41,60 +41,22 @@ class IMAP(Backend):
     last = 0
 
     def init(self):
-        if self.ssl:
-            self.imap_class = IMAP4_SSL
-
-        if use_idle:
-            self.thread = Thread(target=self._idle_thread)
-            self.daemon = True
-            self.thread.start()
+        pass
 
     @contextlib.contextmanager
     def ensure_connection(self):
-        try:
-            if self.connection:
-                self.connection.select(self.mailbox)
-            if not self.connection:
-                self.connection = self.imap_class(self.host, self.port)
-                self.connection.login(self.username, self.password)
-                self.connection.select(self.mailbox)
-            yield
-        except IMAP_EXCEPTIONS:
-            # NOTE(sileht): retry just once if the connection have been
-            # broken to ensure this is not a sporadic connection lost.
-            # Like wifi reconnect, sleep wake up
-            try:
-                self.connection.close()
-            except IMAP_EXCEPTIONS:
-                pass
-            try:
-                self.connection.logout()
-            except IMAP_EXCEPTIONS:
-                pass
-            # Wait a bit when disconnection occurs to not hog the cpu
-            time.sleep(1)
-            self.connection = None
+        pass
 
     def _idle_thread(self):
         # update mail count on startup
-        with self.ensure_connection():
-            self.count_new_mail()
-        while True:
-            with self.ensure_connection():
-                # Block until new mails
-                self.connection.idle()
-                # Read how many
-                self.count_new_mail()
+        pass
 
     def count_new_mail(self):
-        self.last = len(self.connection.search(None, "UnSeen")[1][0].split())
+        pass
 
     @property
     @require(internet)
     def unread(self):
-        if not use_idle:
-            with self.ensure_connection():
-                self.count_new_mail()
-        return self.last
+        pass
 
 Backend = IMAP

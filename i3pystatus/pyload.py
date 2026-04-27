@@ -14,13 +14,13 @@ class pyLoad(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{captcha}` — see captcha_true and captcha_false, which are the values filled in for this formatter
-    * `{progress}` — average over all running downloads
-    * `{progress_all}` — percentage of completed files/links in queue
-    * `{speed}` — kilobytes/s
-    * `{download}` — downloads enabled, also see download_true and download_false
-    * `{total}` — number of downloads
-    * `{free_space}` — free space in download directory in gigabytes
+    * `{captcha}` â€” see captcha_true and captcha_false, which are the values filled in for this formatter
+    * `{progress}` â€” average over all running downloads
+    * `{progress_all}` â€” percentage of completed files/links in queue
+    * `{speed}` â€” kilobytes/s
+    * `{download}` â€” downloads enabled, also see download_true and download_false
+    * `{total}` â€” number of downloads
+    * `{free_space}` â€” free space in download directory in gigabytes
     """
     interval = 5
 
@@ -44,48 +44,16 @@ class pyLoad(IntervalModule):
     on_leftclick = "open_webbrowser"
 
     def _rpc_call(self, method, data=None):
-        if not data:
-            data = {}
-        urlencoded = urllib.parse.urlencode(data).encode("ascii")
-        return json.loads(self.opener.open("{address}/api/{method}/".format(address=self.address, method=method),
-                                           urlencoded).read().decode("utf-8"))
+        pass
 
     def init(self):
-        self.cj = http.cookiejar.CookieJar()
-        self.opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(self.cj))
+        pass
 
     def login(self):
-        return self._rpc_call("login", {
-            "username": self.username,
-            "password": self.password,
-        })
+        pass
 
     def run(self):
-        self.login()
-        server_status = self._rpc_call("statusServer")
-        downloads_status = self._rpc_call("statusDownloads")
-
-        if downloads_status:
-            progress = sum(dl["percent"]
-                           for dl in downloads_status) / len(downloads_status) * 100
-        else:
-            progress = 100.0
-
-        fdict = {
-            "download": self.download_true if server_status["download"] else self.download_false,
-            "speed": server_status["speed"] / 1024,
-            "progress": progress,
-            "progress_all": sum(pkg["linksdone"] for pkg in self._rpc_call("getQueue")) / server_status["total"] * 100,
-            "captcha": self.captcha_true if self._rpc_call("isCaptchaWaiting") else self.captcha_false,
-            "free_space": self._rpc_call("freeSpace") / (1024 ** 3),
-        }
-
-        self.data = fdict
-        self.output = {
-            "full_text": self.format.format(**fdict).strip(),
-            "instance": self.address,
-        }
+        pass
 
     def open_webbrowser(self):
-        webbrowser.open_new_tab(self.address)
+        pass

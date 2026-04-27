@@ -12,14 +12,14 @@ class Moc(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{status}` — current status icon (paused/playing/stopped)
-    * `{song_elapsed}` — song elapsed time (mm:ss format)
-    * `{song_length}` — total song duration (mm:ss format)
-    * `{artist}` — artist
-    * `{title}` — title
-    * `{album}` — album
-    * `{tracknumber}` — tracknumber
-    * `{file}` — file or url name
+    * `{status}` â€” current status icon (paused/playing/stopped)
+    * `{song_elapsed}` â€” song elapsed time (mm:ss format)
+    * `{song_length}` â€” total song duration (mm:ss format)
+    * `{artist}` â€” artist
+    * `{title}` â€” title
+    * `{album}` â€” album
+    * `{tracknumber}` â€” tracknumber
+    * `{file}` â€” file or url name
     """
 
     settings = (
@@ -36,9 +36,9 @@ class Moc(IntervalModule):
     format_not_running = 'Not running'
     interval = 1
     status = {
-        'pause': '▷',
-        'play': '▶',
-        'stop': '◾',
+        'pause': 'â–·',
+        'play': 'â–¶',
+        'stop': 'â—¾',
     }
 
     on_leftclick = 'toggle_pause'
@@ -47,58 +47,19 @@ class Moc(IntervalModule):
     on_downscroll = 'previous_song'
 
     def _moc_command(self, command):
-        cmdline = 'mocp --{command}'.format(command=command)
-        return run_through_shell(cmdline, enable_shell=True)
+        pass
 
     def _query_moc(self):
-        response = {}
-
-        # Get raw information
-        cmd = self._moc_command('info')
-
-        # Now we make it useful
-        if not cmd.rc:
-            for line in cmd.out.splitlines():
-                key, _, value = line.partition(': ')
-                response[key] = value
-
-        return response
+        pass
 
     def run(self):
-        response = self._query_moc()
-
-        if response:
-            fdict = {
-                'album': response.get('Album', ''),
-                'artist': response.get('Artist', ''),
-                'file': response.get('File', ''),
-                'song_elapsed': TimeWrapper(response.get('CurrentSec', 0)),
-                'song_length': TimeWrapper(response.get('TotalSec', 0)),
-                'status': self.status[response['State'].lower()],
-                'title': response.get('SongTitle', ''),
-                'tracknumber': re.match(r'(\d*).*', response.get('Title', '')).group(1) or 0,
-            }
-
-            self.data = fdict
-
-            self.output = {
-                'full_text': formatp(self.format, **self.data),
-                'color': self.color,
-            }
-        else:
-            if hasattr(self, "data"):
-                del self.data
-
-            self.output = {
-                'full_text': self.format_not_running,
-                'color': self.color_not_running,
-            }
+        pass
 
     def toggle_pause(self):
-        self._moc_command('toggle-pause')
+        pass
 
     def next_song(self):
-        self._moc_command('next')
+        pass
 
     def previous_song(self):
-        self._moc_command('previous')
+        pass

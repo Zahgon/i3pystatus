@@ -35,40 +35,15 @@ class Vk(IntervalModule):
 
     @require(internet)
     def token_request(self, func):
-        user_open(self.API_LINK.format(id=self.app_id))
-        self.run = func
+        pass
 
     @require(internet)
     def init(self):
-        if self.access_token:
-            self.session = vk.AuthSession(app_id=self.app_id, access_token=self.access_token)
-            self.api = vk.API(self.session, v='5.40', lang='en', timeout=10)
-            try:
-                permissions = int(self.api.account.getAppPermissions())
-                assert((permissions & 65536 == 65536) and (permissions & 4096 == 4096))
-            except:
-                self.token_request(self.error)
-        else:
-            self.token_request(lambda: None)
+        pass
 
     @require(internet)
     def run(self):
-        total = self.api.messages.getDialogs()['count']
-        unread = self.api.messages.getDialogs(unread=1)['count']
-
-        if unread > 0:
-            color = self.color_unread
-        else:
-            color = self.color
-
-        self.output = {
-            "full_text": self.format.format(
-                total=total,
-                unread=unread
-            ),
-            "color": color
-        }
+        pass
 
     def error(self):
-        self.output = {"full_text": self.token_error,
-                       "color": self.color_bad}
+        pass

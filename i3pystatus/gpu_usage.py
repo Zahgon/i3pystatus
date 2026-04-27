@@ -34,27 +34,4 @@ class GPUUsage(IntervalModule):
     gpu_number = 0
 
     def run(self):
-        info = gpu.query_nvidia_smi(self.gpu_number)
-
-        gpu_percent = info.usage_gpu
-
-        if gpu_percent >= self.alert_percentage:
-            color = self.alert_color
-        elif gpu_percent >= self.warn_percentage:
-            color = self.warn_color
-        else:
-            color = self.color
-
-        cdict = {
-            "usage": gpu_percent,
-        }
-
-        for key, value in cdict.items():
-            if value is not None:
-                cdict[key] = value
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": color
-        }
+        pass

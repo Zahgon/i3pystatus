@@ -38,48 +38,7 @@ class Disk(IntervalModule):
     mounted_only = False
 
     def not_mounted(self):
-        if self.mounted_only:
-            self.output = {}
-        else:
-            self.output = {} if not self.format_not_mounted else {
-                "full_text": self.format_not_mounted,
-                "color": self.color_not_mounted,
-            }
+        pass
 
     def run(self):
-        if os.path.isdir(self.path) and not os.path.ismount(self.path):
-            if len(os.listdir(self.path)) == 0:
-                self.not_mounted()
-                return
-
-        try:
-            stat = os.statvfs(self.path)
-        except Exception:
-            self.not_mounted()
-            return
-
-        available = (stat.f_bsize * stat.f_bavail) / self.divisor
-
-        if available > self.display_limit:
-            self.output = {}
-            return
-
-        critical = available < self.critical_limit
-
-        cdict = {
-            "total": (stat.f_bsize * stat.f_blocks) / self.divisor,
-            "free": (stat.f_bsize * stat.f_bfree) / self.divisor,
-            "avail": available,
-            "used": (stat.f_bsize * (stat.f_blocks - stat.f_bfree)) / self.divisor,
-            "percentage_free": stat.f_bfree / stat.f_blocks * 100,
-            "percentage_avail": stat.f_bavail / stat.f_blocks * 100,
-            "percentage_used": (stat.f_blocks - stat.f_bfree) / stat.f_blocks * 100,
-        }
-        round_dict(cdict, self.round_size)
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": self.critical_color if critical else self.color,
-            "urgent": critical
-        }
+        pass

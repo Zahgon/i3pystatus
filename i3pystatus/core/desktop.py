@@ -33,7 +33,7 @@ class BaseDesktopNotification:
 
         :returns: boolean indicating success
         """
-        return False
+        pass
 
     def update(self, title=None, body=None, icon=None):
         """
@@ -45,7 +45,7 @@ class BaseDesktopNotification:
 
         :return boolean indicating success
         """
-        return False
+        pass
 
 
 class DesktopNotification(BaseDesktopNotification):
@@ -65,7 +65,7 @@ else:
 
     # List of some useful icon names:
     # battery, battery-caution, battery-low
-    # …
+    # â€¦
 
     class DesktopNotification(DesktopNotification):
         URGENCY_LUT = (
@@ -79,18 +79,7 @@ else:
             self.notification = Notify.Notification.new(self.title, self.body, self.icon)
 
         def display(self):
-            if self.timeout:
-                self.notification.set_timeout(self.timeout)
-            self.notification.set_urgency(self.URGENCY_LUT[self.urgency])
-            try:
-                return self.notification.show()
-            except Exception:
-                self.logger.exception(
-                    'Failed to display desktop notification (is a '
-                    'notification daemon running?)'
-                )
-                return False
+            pass
 
         def update(self, title=None, body=None, icon=None):
-            self.notification.update(title or self.title, body or self.body, icon or self.icon)
-            return self.notification.show()
+            pass

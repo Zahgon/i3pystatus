@@ -35,39 +35,20 @@ class Group(Module, Status):
         self.__name__ = 'Group'
 
     def get_active_module(self):
-        if self.active > len(self.modules):
-            return
-        return self.modules[self.active]
+        pass
 
     def run(self):
-        activemodule = self.get_active_module()
-        if not activemodule:
-            return
-        self.output = activemodule.output
+        pass
 
     def register(self, *args, **kwargs):
-        module = Status.register(self, *args, **kwargs)
-        if module:
-            module.on_change = self.run
-        return module
+        pass
 
     def cycle_module(self, increment=1):
-        active = self.active + increment
-        if active >= len(self.modules):
-            active = 0
-        elif active < 0:
-            active = len(self.modules) - 1
-        self.active = active
+        pass
 
     def on_click(self, button, **kwargs):
         """
         Capture scrollup and scorlldown to move in groups
         Pass everthing else to the module itself
         """
-        if button in (4, 5):
-            return super().on_click(button, **kwargs)
-        else:
-            activemodule = self.get_active_module()
-            if not activemodule:
-                return
-            return activemodule.on_click(button, **kwargs)
+        pass

@@ -37,8 +37,8 @@ class Exmo(IntervalModule):
     color_down = '#FF0000'
     interval = 60
     status = {
-        'price_up': '▲',
-        'price_down': '▼',
+        'price_up': 'â–²',
+        'price_down': 'â–¼',
     }
 
     _prev_price = 0
@@ -53,50 +53,14 @@ class Exmo(IntervalModule):
         ]
 
     def fetch_data(self):
-        response = requests.get('https://api.exmo.com/v1/ticker/')
-        return response.json()
+        pass
 
     @require(internet)
     def run(self):
-        try:
-            price_data = self.fetch_data().get(self.pair)
-        except Exception as e:
-            self.output = {
-                'full_text': 'Failed fetching data from server: ' + str(e),
-                'color': '#FF0000'
-            }
-            return
-        fdict = {
-            'pair': self.pair.replace('_', '/'),
-            'buy_price': price_data.get('buy_price', 0),
-            'status': ''
-        }
-        color = self.color
-
-        if self._prev_price and fdict['buy_price'] > self._prev_price:
-            color = self.color_up
-            fdict['status'] = self.status['price_up']
-        elif self._prev_price and fdict['buy_price'] < self._prev_price:
-            color = self.color_down
-            fdict['status'] = self.status['price_down']
-        else:
-            color = self._prev_color
-            fdict['status'] = self._prev_status
-
-        self._prev_price = price_data.get('buy_price', 0)
-        self._prev_status = fdict['status']
-        self._prev_color = color
-
-        if not self.colorize:
-            color = self.color
-
-        self.output = {
-            'full_text': formatp(self.format, **fdict).strip(),
-            'color': color
-        }
+        pass
 
     def open_something(self, url_or_command):
         """
         Wrapper function, to pass the arguments to user_open
         """
-        user_open(url_or_command)
+        pass

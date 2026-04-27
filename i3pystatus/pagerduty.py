@@ -51,31 +51,8 @@ class PagerDuty(IntervalModule):
     num_incidents = None
 
     def init(self):
-        pypd.api_key = self.api_key
-        if self.user_id:
-            self.api_search_dict['user_ids'] = [self.user_id]
+        pass
 
     @require(internet)
     def run(self):
-        pd_incidents = pypd.Incident.find(**self.api_search_dict)
-
-        incidents = {
-            'acknowledged': [],
-            'triggered': [],
-            'all': []
-        }
-        for incident in pd_incidents:
-            incidents['all'].append(incident)
-            status = incident.get('status')
-            if status == 'acknowledged':
-                incidents['acknowledged'].append(incident)
-            elif status == 'triggered':
-                incidents['triggered'].append(incident)
-        self.num_acknowledged_incidents = len(incidents.get('acknowledged'))
-        self.num_triggered_incidents = len(incidents.get('triggered'))
-        self.num_incidents = len(incidents.get('all'))
-
-        self.output = dict(
-            full_text=formatp(self.format, **vars(self)),
-            color=self.color
-        )
+        pass

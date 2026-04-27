@@ -15,12 +15,7 @@ LOCALE_LOCK = threading.Lock()
 @contextmanager
 def setlocale(name):
     # To deal with locales only in this module and keep it thread save
-    with LOCALE_LOCK:
-        saved = locale.setlocale(locale.LC_ALL)
-        try:
-            yield locale.setlocale(locale.LC_ALL, name)
-        finally:
-            locale.setlocale(locale.LC_ALL, saved)
+    pass
 
 
 class Bitcoin(IntervalModule):
@@ -78,8 +73,8 @@ class Bitcoin(IntervalModule):
     color_down = "#FF0000"
     interval = 600
     status = {
-        "price_up": "▲",
-        "price_down": "▼",
+        "price_up": "â–²",
+        "price_down": "â–¼",
     }
 
     on_leftclick = "electrum"
@@ -88,88 +83,23 @@ class Bitcoin(IntervalModule):
     _price_prev = 0
 
     def _get_age(self, bitcoinaverage_timestamp):
-        with setlocale('C'):  # Deal with locales (months name differ)
-            # Assume format is always utc, to avoid import pytz
-            diff = datetime.utcnow() - \
-                datetime.fromtimestamp(bitcoinaverage_timestamp)
-        return int(diff.total_seconds())
+        pass
 
     def _query_api(self, api_url):
-        url = "{}/{}".format(api_url, self.exchange.upper())
-        response = urllib.request.urlopen(url).read().decode("utf-8")
-        return json.loads(response)
+        pass
 
     def _fetch_price_data(self):
-        api_url = "https://api.bitaps.com/market/v1/tickers"
-        ret = self._query_api(api_url)["data"]
-        exchange = ret[self.exchange.upper()]["pairs"]["BTC{}".format(self.currency.upper())]
-        # Adapt values to global ticker format
-        exchange['24h_avg'] = None
-        return exchange
+        pass
 
     def _fetch_blockchain_data(self):
-        api = "https://blockchain.info/multiaddr?active="
-        addresses = "|".join(self.wallet_addresses)
-        url = "{}{}".format(api, addresses)
-        return json.loads(urllib.request.urlopen(url).read().decode("utf-8"))
+        pass
 
     @require(internet)
     def run(self):
-        price_data = self._fetch_price_data()
-
-        fdict = {
-            "symbol": self.symbol,
-            "open": price_data["open"],
-            "ask_price": price_data["ask"],
-            "bid_price": price_data["bid"],
-            "last_price": price_data["last"],
-            "volume": price_data["volume"],
-            "volume_thousand": float(price_data["volume"]) / 1000,
-            "age": self._get_age(price_data['timestamp'])
-        }
-
-        if self._price_prev and fdict["last_price"] > self._price_prev:
-            color = self.color_up
-            fdict["status"] = self.status["price_up"]
-        elif self._price_prev and fdict["last_price"] < self._price_prev:
-            color = self.color_down
-            fdict["status"] = self.status["price_down"]
-        else:
-            color = self.color
-            fdict["status"] = ""
-        self._price_prev = fdict["last_price"]
-
-        if not self.colorize:
-            color = self.color
-
-        if self.wallet_addresses:
-            blockchain_data = self._fetch_blockchain_data()
-            wallet_data = blockchain_data["wallet"]
-            balance_btc = wallet_data["final_balance"] / 100000000
-            fdict["balance_btc"] = round(balance_btc, 2)
-            balance_fiat = fdict["balance_btc"] * fdict["last_price"]
-            fdict["balance_fiat"] = round(balance_fiat, 2)
-            fdict["total_sent"] = wallet_data["total_sent"]
-            fdict["total_received"] = wallet_data["total_received"]
-            fdict["transactions"] = wallet_data["n_tx"]
-
-            if fdict["transactions"]:
-                last_tx = blockchain_data["txs"][0]
-                fdict["last_tx_addr"] = last_tx["out"][0]["addr"]
-                fdict["last_tx_value"] = last_tx["out"][0]["value"] / 100000000
-                if fdict["last_tx_addr"] in self.wallet_addresses:
-                    fdict["last_tx_type"] = "recv"
-                else:
-                    fdict["last_tx_type"] = "sent"
-
-        self.data = fdict
-        self.output = {
-            "full_text": self.format.format(**fdict),
-            "color": color,
-        }
+        pass
 
     def open_something(self, url_or_command):
         """
         Wrapper function, to pass the arguments to user_open
         """
-        user_open(url_or_command)
+        pass

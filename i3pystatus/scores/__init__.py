@@ -27,56 +27,17 @@ class ScoresBackend(SettingsBase):
         # check is sufficient here because i3pystatus.scores.Scores instance
         # will already have checked to see if any invalid teams were specified
         # in team_colors.
-        if len(self.team_colors) != len(self._default_colors):
-            self.logger.debug(
-                f'Overriding {self.name} team colors '
-                f'with: {self.team_colors}'
-            )
-            new_colors = copy.copy(self._default_colors)
-            new_colors.update(self.team_colors)
-            self.team_colors = new_colors
-        self.logger.debug(f'{self.name} team colors: {self.team_colors}')
+        pass
 
     def api_request(self, url):
-        self.logger.debug(f'Making {self.name} API request to {url}')
-        try:
-            with urlopen(url) as content:
-                try:
-                    if content.url != url:
-                        self.logger.debug(
-                            f'Request to {url} was redirected to {content.url}'
-                        )
-                    content_type = dict(content.getheaders())['Content-Type']
-                    charset = re.search(r'charset=(.*)', content_type).group(1)
-                except AttributeError:
-                    charset = 'utf-8'
-                response_json = content.read().decode(charset).strip()
-                if not response_json:
-                    self.logger.debug(f'JSON response from {url} was blank')
-                    return {}
-                try:
-                    response = json.loads(response_json)
-                except json.decoder.JSONDecodeError as exc:
-                    self.logger.exception(f'Error encountered while loading JSON')
-                    self.logger.debug(f'Text that failed to load: {response_json}')
-                    return {}
-                self.logger.log(5, f'API response: {response}')
-                return response
-        except HTTPError as exc:
-            self.logger.critical(
-                f'Error {exc.code} ({exc.reason}) making request to {exc.url}'
-            )
-            return {}
-        except (ConnectionResetError, URLError) as exc:
-            self.logger.critical(f'Error making request to {url}: {exc}')
-            return {}
+        pass
 
     @property
     def name(self):
         '''
         Return the backend name
         '''
-        return self.__class__.__name__
+        pass
 
     def get_api_date(self):
         '''
@@ -84,104 +45,21 @@ class ScoresBackend(SettingsBase):
         if between midnight and 10am Eastern time. Override this function in a
         subclass to change how the API date is calculated.
         '''
-        # NOTE: If you are writing your own function to get the date, make sure
-        # to include the first if block below to allow for the ``date``
-        # parameter to hard-code a date.
-        api_date = None
-        if self.date is not None and not isinstance(self.date, datetime):
-            try:
-                api_date = datetime.strptime(self.date, '%Y-%m-%d')
-            except (TypeError, ValueError):
-                self.logger.warning(f"Invalid date '{self.date}'")
-
-        if api_date is None:
-            utc_time = pytz.utc.localize(datetime.utcnow())
-            eastern = pytz.timezone('US/Eastern')
-            api_date = eastern.normalize(utc_time.astimezone(eastern))
-            if api_date.hour < 10:
-                # The scores on NHL.com change at 10am Eastern, if it's before
-                # that time of day then we will use yesterday's date.
-                api_date -= timedelta(days=1)
-        self.date = api_date
+        pass
 
     @staticmethod
     def add_ordinal(number):
-        try:
-            number = int(number)
-        except ValueError:
-            return number
-        if 4 <= number <= 20:
-            suffix = 'th'
-        else:
-            ord_map = {1: 'st', 2: 'nd', 3: 'rd'}
-            suffix = ord_map.get(number % 10, 'th')
-        return f'{number}{suffix}'
+        pass
 
     @staticmethod
     def zero_fallback(value):
-        try:
-            int(value)
-        except (TypeError, ValueError):
-            return '0'
-        else:
-            return str(value)
+        pass
 
     def get_nested(self, data, expr, callback=None, default=''):
-        if callback is None:
-            def callback(x):
-                return x
-        try:
-            for key in expr.split(':'):
-                if key.isdigit() and isinstance(data, list):
-                    key = int(key)
-                data = data[key]
-        except (KeyError, IndexError, TypeError):
-            self.logger.debug(
-                f'No {self.name} data found at {expr}, '
-                f'falling back to {repr(default)}'
-            )
-            return default
-        return callback(data)
+        pass
 
     def interpret_api_return(self, data, team_game_map):
-        favorite_games = []
-        # Cycle through the followed teams to ensure that games show up in the
-        # order of teams being followed.
-        for team in self.favorite_teams:
-            for id_ in team_game_map.get(team, []):
-                if id_ not in favorite_games:
-                    favorite_games.append(id_)
-
-        # If all games are being tracked, add any games not from
-        # explicitly-followed teams.
-        if self.all_games:
-            additional_games = [x for x in data if x not in favorite_games]
-        else:
-            additional_games = []
-
-        # Process the API return data for each tracked game
-        self.games = {}
-        for game_id in favorite_games + additional_games:
-            self.games[game_id] = self.process_game(data[game_id])
-
-        # Favorite games come first
-        self.scroll_order = [self.games[x]['id'] for x in favorite_games]
-
-        # For any remaining games being tracked, sort each group by start time
-        # and add them to the list
-        for status in self.display_order:
-            time_map = {
-                x: self.games[x]['start_time'] for x in self.games
-                if x not in favorite_games and self.games[x]['status'] == status
-            }
-            sorted_games = sorted(time_map.items(), key=operator.itemgetter(1))
-            self.scroll_order.extend([x[0] for x in sorted_games])
-
-        # Reverse map so that we can know the scroll position for a given game
-        # by just its ID. This will help us to place the game in its new order
-        # when that order changes due to the game changing from one status to
-        # another.
-        self.scroll_order_revmap = {y: x for x, y in enumerate(self.scroll_order)}
+        pass
 
 
 class Scores(Module):
@@ -229,15 +107,15 @@ class Scores(Module):
             'scores',
             hints={'markup': 'pango'},
             colorize_teams=True,
-            favorite_icon='<span size="small" color="#F5FF00">★</span>',
+            favorite_icon='<span size="small" color="#F5FF00">â˜…</span>',
             team_format='abbreviation',
             backends=[
                 mlb.MLB(
                     teams=['CWS', 'SF'],
                     team_format='name',
                     format_no_games='No games today :(',
-                    inning_top='⬆',
-                    inning_bottom='⬇',
+                    inning_top='â¬†',
+                    inning_bottom='â¬‡',
                 ),
                 nhl.NHL(teams=['CHI']),
                 nba.NBA(
@@ -283,7 +161,7 @@ class Scores(Module):
             'scores',
             hints={'markup': 'pango'},
             colorize_teams=True,
-            favorite_icon='<span size="small" color="#F5FF00">★</span>',
+            favorite_icon='<span size="small" color="#F5FF00">â˜…</span>',
             backends=[
                 mlb.MLB(
                     teams=['CWS', 'SF', 'ALL'],
@@ -369,12 +247,12 @@ class Scores(Module):
     )
 
     backends = []
-    favorite_icon = '★'
+    favorite_icon = 'â˜…'
     color = None
     color_no_games = None
     colorize_teams = False
-    scroll_arrow = '⬍'
-    refresh_icon = '⟳'
+    scroll_arrow = 'â¬�'
+    refresh_icon = 'âŸ³'
     team_format = 'name'
 
     output = {'full_text': ''}
@@ -389,306 +267,48 @@ class Scores(Module):
     on_doublerightclick = ['reset_backend']
 
     def init(self):
-        if not isinstance(self.backends, list):
-            self.backends = [self.backends]
-
-        if not self.backends:
-            raise ValueError('At least one backend is required')
-
-        # Initialize each backend's game index
-        for index in range(len(self.backends)):
-            self.game_map[index] = None
-
-        for backend in self.backends:
-            if hasattr(backend, '_valid_teams'):
-                for index in range(len(backend.favorite_teams)):
-                    # Force team abbreviation to uppercase
-                    team_uc = str(backend.favorite_teams[index]).upper()
-                    # Check to make sure the team abbreviation is valid
-                    if team_uc not in backend._valid_teams:
-                        raise ValueError(
-                            f'Invalid {backend.name} team '
-                            f"'{backend.favorite_teams[index]}'"
-                        )
-                    backend.favorite_teams[index] = team_uc
-
-            for index in range(len(backend.display_order)):
-                order_lc = str(backend.display_order[index]).lower()
-                # Check to make sure the display order item is valid
-                if order_lc not in backend._valid_display_order:
-                    raise ValueError(
-                        f'Invalid {backend.name} display_order '
-                        f"'{backend.display_order[index]}'"
-                    )
-                backend.display_order[index] = order_lc
-
-            if backend.team_format is None:
-                backend.team_format = self.team_format
-
-        self.condition = threading.Condition()
-        self.thread = threading.Thread(target=self.update_thread, daemon=True)
-        self.thread.start()
+        pass
 
     def update_thread(self):
-        try:
-            self.check_scores(force='scheduled')
-            while True:
-                with self.condition:
-                    self.condition.wait(self.interval)
-                self.check_scores(force='scheduled')
-        except Exception:
-            thread = threading.current_thread().name,
-            timestamp = time.strftime('%c')
-            self.logger.exception(
-                f'Exception in {thread} at {timestamp}, module {self.name}'
-            )
+        pass
 
     @property
     def current_backend(self):
-        return self.backends[self.backend_id]
+        pass
 
     @property
     def current_scroll_index(self):
-        return self.game_map[self.backend_id]
+        pass
 
     @property
     def current_game_id(self):
-        try:
-            return self.current_backend.scroll_order[self.current_scroll_index]
-        except (AttributeError, TypeError):
-            return None
+        pass
 
     @property
     def current_game(self):
-        try:
-            return self.current_backend.games[self.current_game_id]
-        except KeyError:
-            return None
+        pass
 
     def scroll_game(self, step=1):
-        cur_index = self.current_scroll_index
-        if cur_index is None:
-            self.logger.debug(
-                f'Cannot scroll, no tracked {self.current_backend.name} games '
-                f'for {self.current_backend.date:%Y-%m-%d}'
-            )
-        else:
-            new_index = (cur_index + step) % len(self.current_backend.scroll_order)
-            if new_index != cur_index:
-                cur_id = self.current_game_id
-                # Don't reference self.current_scroll_index here, we're setting
-                # a new value for the data point for which
-                # self.current_scroll_index serves as a shorthand.
-                self.game_map[self.backend_id] = new_index
-                self.logger.debug(
-                    f'Scrolled from {self.current_backend.name} '
-                    f'game {cur_index} (ID: {cur_id}) to {new_index} '
-                    f'(ID: {self.current_backend.scroll_order[new_index]})'
-                )
-                self.refresh_display()
-            else:
-                self.logger.debug(
-                    f'Cannot scroll, only one tracked '
-                    f'{self.current_backend.name} game '
-                    f'(ID: {self.current_game_id}) for '
-                    f'{self.current_backend.date:%Y-%m-%d}'
-                )
+        pass
 
     def cycle_backend(self, step=1):
-        if len(self.backends) < 2:
-            self.logger.debug(
-                'Only one backend (%s) configured, backend cannot be changed',
-                self.current_backend.__class__.__name__,
-            )
-            return
-        old = self.backend_id
-        # Set the new backend
-        self.backend_id = (self.backend_id + step) % len(self.backends)
-        self.logger.debug(
-            f'Changed scores backend from {self.backends[old].name} to '
-            f'{self.current_backend.name}'
-        )
-        # Display the score for the new backend. This gets rid of lag between
-        # when the mouse is clicked and when the new backend is shown, caused
-        # by any network latency encountered when updating scores.
-        self.refresh_display()
-        # Update scores (if necessary) and display them
-        self.check_scores()
+        pass
 
     def reset_backend(self):
-        if self.current_backend.games:
-            self.game_map[self.backend_id] = 0
-            self.logger.debug(
-                f'Resetting to first game in {self.current_backend.name} '
-                f'scroll list (ID: {self.current_game_id})'
-            )
-            self.refresh_display()
-        else:
-            self.logger.debug(
-                f'No {self.current_backend.name} games, cannot reset to first '
-                'game in scroll list',
-            )
+        pass
 
     def launch_web(self):
-        game = self.current_game
-        if game is None:
-            live_url = self.current_backend.scoreboard_url
-        else:
-            live_url = game['live_url']
-        self.logger.debug(f'Launching {live_url} in browser')
-        user_open(live_url)
+        pass
 
     @require(internet)
     def check_scores(self, force=False):
-        update_needed = False
-        if not self.current_backend.last_update:
-            update_needed = True
-            self.logger.debug(
-                f'Performing initial {self.current_backend.name} score check'
-            )
-        elif force:
-            update_needed = True
-            self.logger.debug(
-                f'{self.current_backend.name} score check triggered ({force})'
-            )
-        else:
-            update_diff = time.time() - self.current_backend.last_update
-            msg = (
-                f'Seconds since last {self.current_backend.name} update '
-                f'({update_diff}) '
-            )
-            if update_diff >= self.interval:
-                update_needed = True
-                msg += (
-                    f'meets or exceeds update interval ({self.interval}), '
-                    'update triggered'
-                )
-            else:
-                msg += (
-                    f'does not exceed update interval ({self.interval}), '
-                    'update skipped'
-                )
-            self.logger.debug(msg)
-
-        if update_needed:
-            self.show_refresh_icon()
-            cur_id = self.current_game_id
-            cur_games = self.current_backend.games.keys()
-
-            self.current_backend.check_scores()
-            for game in self.current_backend.games.values():
-                if game['status'] in ('pregame', 'postponed'):
-                    # Allow formatp to conditionally hide the score when game
-                    # hasn't started (or has been postponed)
-                    game['home_score'] = game['away_score'] = ''
-
-            if cur_games == self.current_backend.games.keys():
-                # Set the index to the scroll position of the current game (it
-                # may have changed due to this game or other games changing
-                # status.
-                if cur_id is None:
-                    self.logger.debug(
-                        f'No tracked {self.current_backend.name} games for '
-                        f'{self.current_backend.date:%Y-%m-%d}'
-                    )
-                else:
-                    cur_pos = self.game_map[self.backend_id]
-                    new_pos = self.current_backend.scroll_order_revmap[cur_id]
-                    if cur_pos != new_pos:
-                        self.game_map[self.backend_id] = new_pos
-                        self.logger.debug(
-                            f'Scroll position for current '
-                            f'{self.current_backend.name} game '
-                            f'({cur_id}) updated from {cur_pos} to {new_pos}'
-                        )
-                    else:
-                        self.logger.debug(
-                            f'Scroll position ({cur_pos}) for current '
-                            f'{self.current_backend.name} game (ID: {cur_id}) '
-                            'unchanged'
-                        )
-            else:
-                # Reset the index to 0 if there are any tracked games,
-                # otherwise set it to None to signify no tracked games for the
-                # backend.
-                if self.current_backend.games:
-                    self.game_map[self.backend_id] = 0
-                    self.logger.debug(
-                        f'Tracked {self.current_backend.name} games updated, '
-                        f'setting scroll position to 0 '
-                        f'(ID: {self.current_game_id})'
-                    )
-                else:
-                    self.game_map[self.backend_id] = None
-                    self.logger.debug(
-                        f'No tracked {self.current_backend.name} games for '
-                        f'{self.current_backend.date:%Y-%m-%d}'
-                    )
-            self.current_backend.last_update = time.time()
-        self.refresh_display()
+        pass
 
     def show_refresh_icon(self):
-        self.output['full_text'] = \
-            self.refresh_icon + self.output.get('full_text', '')
+        pass
 
     def refresh_display(self):
-        if self.current_scroll_index is None:
-            output = self.current_backend.format_no_games
-            color = self.color_no_games
-        else:
-            game = copy.copy(self.current_game)
-
-            # Set the game_status using the formatter
-            game_status_opt = f'status_{game["status"]}'
-            try:
-                game['game_status'] = formatp(
-                    str(getattr(self.current_backend, game_status_opt)),
-                    **game
-                )
-            except AttributeError:
-                self.logger.error(
-                    f'Unable to find {self.current_backend.name} option '
-                    f'{game_status_opt}'
-                )
-                game['game_status'] = 'Unknown Status'
-
-            for team in ('home', 'away'):
-                team_abbrev = game[f'{team}_abbreviation']
-                # Set favorite icon, if applicable
-                game[f'{team}_favorite'] = self.favorite_icon \
-                    if team_abbrev in self.current_backend.favorite_teams \
-                    else ''
-
-                try:
-                    game[f'{team}_team'] = game[f'{team}_{self.current_backend.team_format}']
-                except KeyError:
-                    self.logger.debug(
-                        f'Unable to find {self.current_backend.team_format} '
-                        f'value, falling back to {team_abbrev}'
-                    )
-                    game[f'{team}_team'] = team_abbrev
-
-                if self.colorize_teams:
-                    try:
-                        color = self.current_backend.team_colors[team_abbrev]
-                    except KeyError:
-                        pass
-                    else:
-                        for val in ('team', 'name', 'city', 'abbreviation'):
-                            # Wrap in Pango markup
-                            game[f'{team}_{val}'] = ''.join((
-                                f'<span color="{color}">',
-                                game[f'{team}_{val}'],
-                                '</span>',
-                            ))
-
-            game['scroll'] = self.scroll_arrow \
-                if len(self.current_backend.games) > 1 \
-                else ''
-
-            output = formatp(self.current_backend.format, **game).strip()
-
-        self.output = {'full_text': output, 'color': self.color}
+        pass
 
     def run(self):
         pass

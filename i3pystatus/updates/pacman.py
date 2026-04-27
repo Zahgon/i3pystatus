@@ -10,9 +10,7 @@ class Pacman(Backend):
 
     @property
     def updates(self):
-        command = ["checkupdates"]
-        checkupdates = run_through_shell(command)
-        return checkupdates.out.count("\n"), checkupdates.out
+        pass
 
 Backend = Pacman
 

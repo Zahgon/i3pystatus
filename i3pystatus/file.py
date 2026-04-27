@@ -36,17 +36,4 @@ class File(IntervalModule):
     color = "#FFFFFF"
 
     def run(self):
-        cdict = {}
-
-        for key, (component, file) in self.components.items():
-            with open(join(self.base_path, file), "r") as f:
-                cdict[key] = component(f.read().strip())
-
-        for key, transform in self.transforms.items():
-            cdict[key] = transform(cdict)
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": self.color
-        }
+        pass

@@ -29,31 +29,10 @@ class CommandEndpoint:
 
     def start(self):
         """Starts the background thread"""
-        self.thread.start()
+        pass
 
     def _command_endpoint(self):
-        for cmd in self.io_handler_factory().read():
-            target_module = self.modules.get(cmd["instance"])
-
-            button = cmd["button"]
-            kwargs = {"button_id": button}
-            try:
-                kwargs.update({
-                    "pos_x": cmd["x"],
-                    "pos_y": cmd["y"],
-                    "modifiers": cmd.get("modifiers"),
-                    "relative_x": cmd.get("relative_x"),
-                    "relative_y": cmd.get("relative_y"),
-                    "width": cmd.get("width"),
-                    "height": cmd.get("height"),
-                })
-            except Exception:
-                continue
-
-            if target_module:
-                target_module.on_click(button, **kwargs)
-                target_module.run()
-                self.io.async_refresh()
+        pass
 
 
 class Status:
@@ -113,37 +92,10 @@ class Status:
         :param kwargs: Settings for the module.
         :returns: module instance
         """
-        from i3pystatus.text import Text
-
-        if not module:
-            return
-
-        # Merge the module's hints with the default hints
-        # and overwrite any duplicates with the hint from the module
-        hints = self.default_hints.copy() if hasattr(self, "default_hints") else {}
-        hints.update(kwargs.get('hints', {}))
-        if hints:
-            kwargs['hints'] = hints
-
-        try:
-            return self.modules.append(module, *args, **kwargs)
-        except Exception as e:
-            log.exception(e)
-            return self.modules.append(Text(
-                color="#FF0000",
-                text="{i3py_mod}: Fatal Error - {ex}({msg})".format(
-                    i3py_mod=module,
-                    ex=e.__class__.__name__,
-                    msg=e
-                )
-            ))
+        pass
 
     def run(self):
         """
         Run main loop.
         """
-        if self.click_events:
-            self.command_endpoint.start()
-        for j in io.JSONIO(self.io).read():
-            for module in self.modules:
-                module.inject(j)
+        pass

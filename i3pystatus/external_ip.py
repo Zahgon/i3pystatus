@@ -45,43 +45,13 @@ class ExternalIP(IntervalModule):
 
     @require(internet)
     def get_external_ip(self):
-        try:
-            request = urllib.request.urlopen(self.ip_website,
-                                             timeout=self.timeout)
-            return request.read().decode().strip()
-        except Exception:
-            return None
+        pass
 
     def run(self):
-        ip = self.get_external_ip()
-        if not ip:
-            return self.disable()
-
-        gi = GeoIP.GeoIP(GeoIP.GEOIP_STANDARD)
-        country_code = gi.country_code_by_addr(ip)
-        country_name = gi.country_name_by_addr(ip)
-
-        if not country_code:
-            return self.disable()  # fail here in the case of a bad IP
-
-        fdict = {
-            "country_name": country_name,
-            "country_code": country_code,
-            "ip": ip
-        }
-
-        self.output = {
-            "full_text": formatp(self.format, **fdict).strip(),
-            "color": self.color
-        }
+        pass
 
     def disable(self):
-        self.output = {
-            "full_text": self.format_down,
-            "color": self.color_down
-        }
+        pass
 
     def switch_hide(self):
-        self.format, self.format_hide = self.format_hide, self.format
-        self.color, self.color_hide = self.color_hide, self.color
-        self.run()
+        pass

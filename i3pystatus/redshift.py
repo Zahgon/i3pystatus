@@ -41,68 +41,43 @@ class RedshiftController(threading.Thread):
 
     def parse_output(self, line):
         """Convert output to key value pairs"""
-
-        try:
-            key, value = line.split(":")
-            self.update_value(key.strip(), value.strip())
-        except ValueError:
-            pass
+        pass
 
     def update_value(self, key, value):
         """Parse key value pairs to update their values"""
-
-        if key == "Status":
-            self._inhibited = value != "Enabled"
-        elif key == "Color temperature":
-            self._temperature = int(value.rstrip("K"), 10)
-        elif key == "Period":
-            self._period = value
-        elif key == "Brightness":
-            self._brightness = value
-        elif key == "Location":
-            location = []
-            for x in value.split(", "):
-                v, d = x.split(" ")
-                location.append(float(v) * (1 if d in "NE" else -1))
-            self._location = (location)
+        pass
 
     @property
     def inhibited(self):
         """Current inhibition state"""
-        return self._inhibited
+        pass
 
     @property
     def temperature(self):
         """Current screen temperature"""
-        return self._temperature
+        pass
 
     @property
     def period(self):
         """Current period of day"""
-        return self._period
+        pass
 
     @property
     def location(self):
         """Current location"""
-        return self._location
+        pass
 
     @property
     def brightness(self):
         """Current brightness"""
-        return self._brightness
+        pass
 
     def set_inhibit(self, inhibit):
         """Set inhibition state"""
-        if self._pid and inhibit != self._inhibited:
-            os.kill(self._pid, signal.SIGUSR1)
-            self._inhibited = inhibit
+        pass
 
     def run(self):
-        with Popen(**self._params) as proc:
-            self._pid = proc.pid
-            for line in proc.stdout:
-                self.parse_output(line)
-            proc.wait(10)
+        pass
 
 
 class Redshift(IntervalModule):
@@ -117,11 +92,11 @@ class Redshift(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{inhibit}` — show if redshift is currently On or Off (using `toggle_inhibit` callback)
-    * `{latitude}` — location latitude
-    * `{longitude}` — location longitude
-    * `{period}` — current period (Day or Night)
-    * `{temperature}` — current screen temperature in Kelvin scale (K)
+    * `{inhibit}` â€” show if redshift is currently On or Off (using `toggle_inhibit` callback)
+    * `{latitude}` â€” location latitude
+    * `{longitude}` â€” location longitude
+    * `{period}` â€” current period (Day or Night)
+    * `{temperature}` â€” current screen temperature in Kelvin scale (K)
 
     """
     settings = (
@@ -141,45 +116,14 @@ class Redshift(IntervalModule):
     redshift_parameters = []
 
     def init(self):
-        self._controller = RedshiftController(self.redshift_parameters)
-        self._controller.daemon = True
-        self._controller.start()
-        self.update_values()
+        pass
 
     def update_values(self):
-        self.inhibit = self._controller.inhibited
-        self.period = self._controller.period
-        self.temperature = self._controller.temperature
-        self.latitude, self.longitude = self._controller.location
-        self.brightness = self._controller.brightness
+        pass
 
     def toggle_inhibit(self):
         """Enable/disable redshift"""
-        if self.inhibit:
-            self._controller.set_inhibit(False)
-            self.inhibit = False
-        else:
-            self._controller.set_inhibit(True)
-            self.inhibit = True
+        pass
 
     def run(self):
-        if self._controller.is_alive():
-            self.update_values()
-            fdict = {
-                "inhibit": self.format_inhibit[int(self.inhibit)],
-                "period": self.period,
-                "temperature": self.temperature,
-                "latitude": self.latitude,
-                "longitude": self.longitude,
-                "brightness": self.brightness,
-            }
-            output = formatp(self.format, **fdict)
-            color = self.color
-        else:
-            output = "redshift exited unexpectedly"
-            color = self.error_color
-
-        self.output = {
-            "full_text": output,
-            "color": color,
-        }
+        pass

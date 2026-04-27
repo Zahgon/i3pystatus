@@ -40,63 +40,16 @@ class ModsDeChecker(IntervalModule):
     on_leftclick = "open_browser"
 
     def init(self):
-        self.cj = http.cookiejar.CookieJar()
-        self.opener = urllib.request.build_opener(
-            urllib.request.HTTPCookieProcessor(self.cj))
+        pass
 
     def run(self):
-        unread = self.get_unread_count()
-
-        if not unread:
-            self.output = None
-        else:
-            self.output = {
-                "full_text": self.format.format(unread=unread),
-                "urgent": "true",
-                "color": self.color
-            }
+        pass
 
     def get_unread_count(self):
-        if not self.logged_in:
-            self.login()
-
-        try:
-            f = self.opener.open(self.bookmark_url)
-            root = ET.fromstring(f.read())
-            return int(root.attrib["newposts"]) - self.offset
-        except Exception:
-            self.cj.clear()
-            self.opener = urllib.request.build_opener(
-                urllib.request.HTTPCookieProcessor(self.cj))
-            self.logged_in = False
+        pass
 
     def login(self):
-        data = urllib.parse.urlencode({
-            "login_username": self.username,
-            "login_password": self.password,
-            "login_lifetime": "31536000"
-        })
-
-        try:
-            response = self.opener.open(self.login_url, data.encode("ascii"))
-        except Exception:
-            return
-
-        page = response.read().decode("ISO-8859-15")
-
-        m = re.search("http://forum.mods.de/SSO.php[^']*", page)
-        self.cj.clear()
-
-        if m and m.group(0):
-            # get the cookie
-            response = self.opener.open(m.group(0))
-            for cookie in self.cj:
-                self.cj.clear
-                self.logged_in = True
-                self.opener.addheaders.append(
-                    ("Cookie", "{}={}".format(cookie.name, cookie.value)))
-            return True
-        return False
+        pass
 
     def open_browser(self):
-        webbrowser.open_new_tab("http://forum.mods.de/bb/")
+        pass

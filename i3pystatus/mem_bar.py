@@ -26,9 +26,7 @@ class MemBar(IntervalModule, ColorRangeModule):
     bar_type = "bar"
 
     def init(self):
-        if self.bar_type not in ("glyph", "bar"):
-            raise Exception("bar_type must be one of 'glyph' or 'bar'")
-        self.colors = self.get_hex_color_range(self.color, self.alert_color, 100)
+        pass
 
     settings = (
         ("format", "format string used for output."),
@@ -44,24 +42,4 @@ class MemBar(IntervalModule, ColorRangeModule):
     )
 
     def run(self):
-        memory_usage = virtual_memory()
-
-        if self.multi_colors:
-            color = self.get_gradient(memory_usage.percent, self.colors)
-        elif memory_usage.percent >= self.alert_percentage:
-            color = self.alert_color
-        elif memory_usage.percent >= self.warn_percentage:
-            color = self.warn_color
-        else:
-            color = self.color
-
-        if self.bar_type.lower() == "glyph":
-            bar = make_glyph(memory_usage.percent, glyphs='○◔◑◕●')
-        else:
-            bar = make_bar(memory_usage.percent)
-
-        self.output = {
-            "full_text": self.format.format(
-                used_mem_bar=bar),
-            "color": color
-        }
+        pass

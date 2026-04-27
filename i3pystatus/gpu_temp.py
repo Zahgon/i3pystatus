@@ -10,7 +10,7 @@ class GPUTemperature(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{temp}`       — the temperature in integer degrees celsius
+    * `{temp}`       â€” the temperature in integer degrees celsius
     """
 
     settings = (
@@ -21,7 +21,7 @@ class GPUTemperature(IntervalModule):
         "alert_temp",
         "alert_color",
     )
-    format = "{temp} °C"
+    format = "{temp} Â°C"
     color = "#FFFFFF"
     alert_temp = 90
     alert_color = "#FF0000"
@@ -29,11 +29,4 @@ class GPUTemperature(IntervalModule):
     gpu_number = 0
 
     def run(self):
-        temp = gpu.query_nvidia_smi(self.gpu_number).temp
-        temp_alert = temp is None or temp >= self.alert_temp
-
-        if eval(self.display_if):
-            self.output = {
-                "full_text": self.format.format(temp=temp),
-                "color": self.color if not temp_alert else self.alert_color,
-            }
+        pass

@@ -21,33 +21,33 @@ class NHL(ScoresBackend):
 
     .. rubric:: Available formatters
 
-    * `{home_team}` — Depending on the value of the ``team_format`` option,
+    * `{home_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the home team's name, abbreviation, or city
-    * `{home_score}` — Home team's current score
-    * `{home_wins}` — Home team's number of wins
-    * `{home_losses}` — Home team's number of losses
-    * `{home_otl}` — Home team's number of overtime losses
-    * `{home_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{home_score}` â€” Home team's current score
+    * `{home_wins}` â€” Home team's number of wins
+    * `{home_losses}` â€” Home team's number of losses
+    * `{home_otl}` â€” Home team's number of overtime losses
+    * `{home_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the home team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{home_empty_net}` — Shows the value from the ``empty_net`` parameter
+    * `{home_empty_net}` â€” Shows the value from the ``empty_net`` parameter
       when the home team's net is empty.
-    * `{away_team}` — Depending on the value of the ``team_format`` option,
+    * `{away_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the away team's name, abbreviation, or city
-    * `{away_score}` — Away team's current score
-    * `{away_wins}` — Away team's number of wins
-    * `{away_losses}` — Away team's number of losses
-    * `{away_otl}` — Away team's number of overtime losses
-    * `{away_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{away_score}` â€” Away team's current score
+    * `{away_wins}` â€” Away team's number of wins
+    * `{away_losses}` â€” Away team's number of losses
+    * `{away_otl}` â€” Away team's number of overtime losses
+    * `{away_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the away team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{away_empty_net}` — Shows the value from the ``empty_net`` parameter
+    * `{away_empty_net}` â€” Shows the value from the ``empty_net`` parameter
       when the away team's net is empty.
-    * `{period}` — Current period
-    * `{venue}` — Name of arena where game is being played
-    * `{start_time}` — Start time of game in system's localtime (supports
+    * `{period}` â€” Current period
+    * `{venue}` â€” Name of arena where game is being played
+    * `{start_time}` â€” Start time of game in system's localtime (supports
       strftime formatting, e.g. `{start_time:%I:%M %p}`)
-    * `{overtime}` — If the game ended in overtime or a shootout, this
+    * `{overtime}` â€” If the game ended in overtime or a shootout, this
       formatter will show ``OT`` kor ``SO``. If the game ended in regulation,
       or has not yet completed, this formatter will be blank.
 
@@ -68,7 +68,7 @@ class NHL(ScoresBackend):
             'scores',
             hints={'markup': 'pango'},
             colorize_teams=True,
-            favorite_icon='<span size="small" color="#F5FF00">★</span>',
+            favorite_icon='<span size="small" color="#F5FF00">â˜…</span>',
             backends=[
                 nhl.NHL(
                     favorite_teams=['CHI'],
@@ -79,38 +79,38 @@ class NHL(ScoresBackend):
 
     .. rubric:: Team abbreviations
 
-    * **ANA** — Anaheim Ducks
-    * **ARI** — Arizona Coyotes
-    * **BOS** — Boston Bruins
-    * **BUF** — Buffalo Sabres
-    * **CAR** — Carolina Hurricanes
-    * **CBJ** — Columbus Blue Jackets
-    * **CGY** — Calgary Flames
-    * **CHI** — Chicago Blackhawks
-    * **COL** — Colorado Avalanche
-    * **DAL** — Dallas Stars
-    * **DET** — Detroit Red Wings
-    * **EDM** — Edmonton Oilers
-    * **FLA** — Florida Panthers
-    * **LAK** — Los Angeles Kings
-    * **MIN** — Minnesota Wild
-    * **MTL** — Montreal Canadiens
-    * **NJD** — New Jersey Devils
-    * **NSH** — Nashville Predators
-    * **NYI** — New York Islanders
-    * **NYR** — New York Rangers
-    * **OTT** — Ottawa Senators
-    * **PHI** — Philadelphia Flyers
-    * **PIT** — Pittsburgh Penguins
-    * **SEA** — Seattle Kraken
-    * **SJS** — San Jose Sharks
-    * **STL** — St. Louis Blues
-    * **TBL** — Tampa Bay Lightning
-    * **TOR** — Toronto Maple Leafs
-    * **VAN** — Vancouver Canucks
-    * **VGK** — Vegas Golden Knights
-    * **WPG** — Winnipeg Jets
-    * **WSH** — Washington Capitals
+    * **ANA** â€” Anaheim Ducks
+    * **ARI** â€” Arizona Coyotes
+    * **BOS** â€” Boston Bruins
+    * **BUF** â€” Buffalo Sabres
+    * **CAR** â€” Carolina Hurricanes
+    * **CBJ** â€” Columbus Blue Jackets
+    * **CGY** â€” Calgary Flames
+    * **CHI** â€” Chicago Blackhawks
+    * **COL** â€” Colorado Avalanche
+    * **DAL** â€” Dallas Stars
+    * **DET** â€” Detroit Red Wings
+    * **EDM** â€” Edmonton Oilers
+    * **FLA** â€” Florida Panthers
+    * **LAK** â€” Los Angeles Kings
+    * **MIN** â€” Minnesota Wild
+    * **MTL** â€” Montreal Canadiens
+    * **NJD** â€” New Jersey Devils
+    * **NSH** â€” Nashville Predators
+    * **NYI** â€” New York Islanders
+    * **NYR** â€” New York Rangers
+    * **OTT** â€” Ottawa Senators
+    * **PHI** â€” Philadelphia Flyers
+    * **PIT** â€” Pittsburgh Penguins
+    * **SEA** â€” Seattle Kraken
+    * **SJS** â€” San Jose Sharks
+    * **STL** â€” St. Louis Blues
+    * **TBL** â€” Tampa Bay Lightning
+    * **TOR** â€” Toronto Maple Leafs
+    * **VAN** â€” Vancouver Canucks
+    * **VGK** â€” Vegas Golden Knights
+    * **WPG** â€” Winnipeg Jets
+    * **WSH** â€” Washington Capitals
     '''
     interval = 300
 
@@ -223,171 +223,7 @@ class NHL(ScoresBackend):
 
     @require(internet)
     def check_scores(self):
-        self.get_api_date()
-        url = self.api_url.format(date=self.date)
-
-        game_list = self.get_nested(self.api_request(url),
-                                    'dates:0:games',
-                                    default=[])
-
-        # Convert list of games to dictionary for easy reference later on
-        data = {}
-        team_game_map = {}
-        for game in game_list:
-            try:
-                id_ = game['gamePk']
-            except KeyError:
-                continue
-
-            try:
-                for key in ('home', 'away'):
-                    team = game['teams'][key]['team']['abbreviation'].upper()
-                    if team in self.favorite_teams:
-                        team_game_map.setdefault(team, []).append(id_)
-            except KeyError:
-                continue
-
-            data[id_] = game
-
-        self.interpret_api_return(data, team_game_map)
+        pass
 
     def process_game(self, game):
-        ret = {}
-
-        self.logger.debug(f'Processing {self.name} game data: {game}')
-
-        linescore = self.get_nested(game, 'linescore', default={})
-
-        ret['id'] = game['gamePk']
-        ret['live_url'] = self.live_url.format(id=ret['id'])
-        ret['period'] = self.get_nested(
-            linescore,
-            'currentPeriodOrdinal')
-        ret['time_remaining'] = self.get_nested(
-            linescore,
-            'currentPeriodTimeRemaining',
-            callback=lambda x: x.capitalize())
-        ret['venue'] = self.get_nested(
-            game,
-            'venue:name')
-
-        pp_strength = self.get_nested(linescore, 'powerPlayStrength')
-
-        for team in ('away', 'home'):
-            team_data = self.get_nested(game, f'teams:{team}', default={})
-
-            if team == 'home':
-                ret['venue'] = self.get_nested(team_data, 'venue:name')
-
-            ret[f'{team}_score'] = self.get_nested(
-                team_data,
-                'score',
-                callback=self.zero_fallback,
-                default=0)
-            ret[f'{team}_wins'] = int(
-                self.get_nested(
-                    team_data,
-                    'leagueRecord:wins',
-                    callback=self.zero_fallback,
-                    default=0,
-                )
-            )
-            ret[f'{team}_losses'] = int(
-                self.get_nested(
-                    team_data,
-                    'leagueRecord:losses',
-                    callback=self.zero_fallback,
-                    default=0,
-                )
-            )
-            ret[f'{team}_otl'] = int(
-                self.get_nested(
-                    team_data,
-                    'leagueRecord:ot',
-                    callback=self.zero_fallback,
-                    default=0,
-                )
-            )
-
-            ret[f'{team}_city'] = self.get_nested(
-                team_data,
-                'team:shortName')
-            ret[f'{team}_name'] = self.get_nested(
-                team_data,
-                'team:teamName')
-            ret[f'{team}_abbreviation'] = self.get_nested(
-                team_data,
-                'team:abbreviation')
-            ret[f'{team}_power_play'] = self.get_nested(
-                linescore,
-                f'teams:{team}:powerPlay',
-                callback=lambda x: pp_strength if x and pp_strength != 'Even' else '')
-            ret[f'{team}_empty_net'] = self.get_nested(
-                linescore,
-                f'teams:{team}:goaliePulled',
-                callback=lambda x: self.empty_net if x else '')
-
-        if game.get('gameType') == 'P':
-            # Calculate wins/losses in current playoff series
-            home_rem = ret['home_wins'] % 4
-            away_rem = ret['away_wins'] % 4
-
-            if ret['home_wins'] == ret['away_wins']:
-                if home_rem == 0:
-                    # Both teams have multiples of 4 wins, so series has no
-                    # completed games.
-                    ret['home_wins'] = ret['away_wins'] = 0
-                else:
-                    ret['home_wins'] = home_rem
-                    ret['away_wins'] = away_rem
-            elif ret['home_wins'] > ret['away_wins']:
-                ret['home_wins'] = 4 if home_rem == 0 else home_rem
-                ret['away_wins'] = away_rem
-            else:
-                ret['away_wins'] = 4 if away_rem == 0 else away_rem
-                ret['home_wins'] = home_rem
-
-            # Series losses are the other team's wins
-            ret['home_losses'] = ret['away_wins']
-            ret['away_losses'] = ret['home_wins']
-
-        if self.get_nested(game, 'status:detailedState').lower() == 'postponed':
-            ret['status'] = 'postponed'
-        else:
-            ret['status'] = self.get_nested(
-                game,
-                'status:abstractGameState',
-                callback=lambda x: x.lower().replace(' ', '_'))
-
-            if ret['status'] == 'live':
-                ret['status'] = 'in_progress'
-            elif ret['status'] == 'final':
-                ret['overtime'] = self.get_nested(
-                    linescore,
-                    'currentPeriodOrdinal',
-                    callback=lambda x: x if 'OT' in x or x == 'SO' else '')
-            elif ret['status'] != 'in_progress':
-                ret['status'] = 'pregame'
-
-        # Game time is in UTC, ISO format, thank the FSM
-        # Ex. 2016-04-02T17:00:00Z
-        game_time_str = game.get('gameDate', '')
-        try:
-            game_time = datetime.strptime(game_time_str, '%Y-%m-%dT%H:%M:%SZ')
-        except ValueError as exc:
-            # Log when the date retrieved from the API return doesn't match the
-            # expected format (to help troubleshoot API changes), and set an
-            # actual datetime so format strings work as expected. The times
-            # will all be wrong, but the logging here will help us make the
-            # necessary changes to adapt to any API changes.
-            self.logger.exception(
-                f'Error encountered determining {self.name} game time for '
-                f'game {game["id"]}'
-            )
-            game_time = datetime.datetime(1970, 1, 1)
-
-        ret['start_time'] = pytz.utc.localize(game_time).astimezone()
-
-        self.logger.debug(f'Returned {self.name} formatter data: {ret}')
-
-        return ret
+        pass

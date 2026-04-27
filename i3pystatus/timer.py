@@ -107,42 +107,10 @@ class Timer(IntervalModule):
     on_reset = None
 
     def init(self):
-        self.compare = 0
-        self.state = TimerState.stopped
-        if not self.format_custom:
-            self.format_custom = []
+        pass
 
     def run(self):
-        if self.state is not TimerState.stopped:
-            diff = self.compare - time.time()
-
-            if diff < 0 and self.state is TimerState.running:
-                self.state = TimerState.overflow
-                if self.on_overflow:
-                    if callable(self.on_overflow):
-                        self.on_overflow()
-                    else:
-                        execute(self.on_overflow)
-
-            fmt = self.format
-            color = self.color
-            for rule in self.format_custom:
-                if diff < rule[0]:
-                    fmt = rule[1]
-                    color = rule[2]
-                    break
-            urgent = self.overflow_urgent and self.state is TimerState.overflow
-
-            self.output = {
-                "full_text": format(TimeWrapper(abs(diff), fmt)),
-                "color": color,
-                "urgent": urgent,
-            }
-        else:
-            self.output = {
-                "full_text": self.format_stopped,
-                "color": self.color_stopped,
-            }
+        pass
 
     def start(self, seconds=300):
         """
@@ -151,11 +119,7 @@ class Timer(IntervalModule):
 
         :param int seconds: Initial time.
         """
-        if self.state is TimerState.stopped:
-            self.compare = time.time() + abs(seconds)
-            self.state = TimerState.running
-        elif self.state is TimerState.running:
-            self.increase(seconds)
+        pass
 
     def increase(self, seconds):
         """
@@ -164,19 +128,10 @@ class Timer(IntervalModule):
         :param int seconds: Seconds to add. Negative value subtracts from
          remaining time.
         """
-        if self.state is TimerState.running:
-            new_compare = self.compare + seconds
-            if new_compare > time.time():
-                self.compare = new_compare
+        pass
 
     def reset(self):
         """
         Stop timer and execute ``on_reset`` if overflow occurred.
         """
-        if self.state is not TimerState.stopped:
-            if self.on_reset and self.state is TimerState.overflow:
-                if callable(self.on_reset):
-                    self.on_reset()
-                else:
-                    execute(self.on_reset)
-            self.state = TimerState.stopped
+        pass

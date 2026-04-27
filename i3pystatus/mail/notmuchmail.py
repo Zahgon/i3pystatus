@@ -22,24 +22,11 @@ class Notmuch(Backend):
     query = "tag:unread and tag:inbox"
 
     def init(self):
-        if not self.db_path:
-            defaultConfigFilename = os.path.expanduser("~/.notmuch-config")
-            config = configparser.RawConfigParser()
-
-            # read tries to read and returns successfully read filenames
-            successful = config.read([
-                os.environ.get("NOTMUCH_CONFIG", defaultConfigFilename),
-                defaultConfigFilename
-            ])
-
-            self.db_path = config.get("database", "path")
+        pass
 
     @property
     def unread(self):
-        db = notmuch2.Database(self.db_path)
-        result = db.count_messages(self.query)
-        db.close()
-        return result
+        pass
 
 
 Backend = Notmuch

@@ -11,14 +11,7 @@ from i3pystatus.core.command import execute
 
 def is_method_of(method, object):
     """Decide whether ``method`` is contained within the MRO of ``object``."""
-    if not callable(method) or not hasattr(method, "__name__"):
-        return False
-    if inspect.ismethod(method):
-        return method.__self__ is object
-    for cls in inspect.getmro(object.__class__):
-        if cls.__dict__.get(method.__name__, None) is method:
-            return True
-    return False
+    pass
 
 
 class Module(SettingsBase):
@@ -70,118 +63,32 @@ class Module(SettingsBase):
 
     @property
     def output(self):
-        return self._output
+        pass
 
     @output.setter
     def output(self, value):
-        self._output = value
-        if self.on_change:
-            self.on_change()
+        pass
 
     def registered(self, status_handler):
         """Called when this module is registered with a status handler"""
-        self.__status_handler = status_handler
+        pass
 
     def inject(self, json):
-        if self.output:
-            if "name" not in self.output:
-                self.output["name"] = self.__name__
-            self.output["instance"] = str(id(self))
-            if (self.output.get("color", "") or "").lower() in ("", "#ffffff"):
-                self.output.pop("color", None)
-            if self.hints:
-                for key, val in self.hints.items():
-                    if key not in self.output:
-                        self.output.update({key: val})
-            if self.output.get("markup") == "pango":
-                self.text_to_pango()
-
-            json.insert(convert_position(self.position, json), self.output)
+        pass
 
     def run(self):
         pass
 
     def send_output(self):
         """Send a status update with the current module output"""
-        self.__status_handler.io.async_refresh()
+        pass
 
     def __log_button_event(self, button, cb, args, action, **kwargs):
-        msg = "{}: button={}, cb='{}', args={}, kwargs={}, type='{}'".format(
-            self.__name__, button, cb, args, kwargs, action)
-        self.logger.debug(msg)
+        pass
 
     def __button_callback_handler(self, button, cb, **kwargs):
 
-        def call_callback(cb, *args, **kwargs):
-            # Recover the function if wrapped (with get_module for example)
-            wrapped_cb = getattr(cb, "__wrapped__", None)
-            if wrapped_cb:
-                locals()["self"] = self  # Add self to the local stack frame
-                tmp_cb = wrapped_cb
-            else:
-                tmp_cb = cb
-
-            try:
-                args_spec = inspect.getfullargspec(tmp_cb)
-            except Exception:
-                args_spec = inspect.FullArgSpec(
-                    [], None, None, None, None, None, {})
-
-            # Remove all variables present in kwargs that are not used in the
-            # callback, except if there is a keyword argument.
-            if not args_spec.varkw:
-                kwargs = {k: v for k, v in kwargs.items()
-                          if k in args_spec.args}
-            cb(*args, **kwargs)
-
-        if not cb:
-            self.__log_button_event(button, None, None,
-                                    "No callback attached", **kwargs)
-            return False
-
-        if isinstance(cb, list):
-            cb, args = (cb[0], cb[1:])
-        else:
-            args = []
-
-        try:
-            our_method = is_method_of(cb, self)
-            if callable(cb) and not our_method:
-                self.__log_button_event(button, cb, args,
-                                        "Python callback", **kwargs)
-                call_callback(cb, *args, **kwargs)
-            elif our_method:
-                self.__log_button_event(button, cb, args,
-                                        "Method callback", **kwargs)
-                call_callback(cb, self, *args, **kwargs)
-            elif hasattr(self, cb):
-                if cb != "run":
-                    # CommandEndpoint already calls run() after every
-                    # callback to instantly update any changed state due
-                    # to the callback's actions.
-                    self.__log_button_event(button, cb, args,
-                                            "Member callback", **kwargs)
-                    call_callback(getattr(self, cb), *args, **kwargs)
-            else:
-                self.__log_button_event(button, cb, args,
-                                        "External command", **kwargs)
-
-                if hasattr(self, "data"):
-                    kwargs.update(self.data)
-
-                args = [str(arg).format(**kwargs) for arg in args]
-                cb = cb.format(**kwargs)
-                execute(cb + " " + " ".join(args), detach=True)
-        except Exception as e:
-            self.logger.critical("Exception while processing button "
-                                 "callback: {!r}".format(e))
-            self.logger.critical(traceback.format_exc())
-
-        # Notify status handler
-        try:
-            self.__status_handler.io.async_refresh()
-        except:
-            pass
+        pass
 
     def on_click(self, button, **kwargs):
         """
@@ -220,38 +127,10 @@ class Module(SettingsBase):
         :return: Returns ``True`` if a valid callback action was executed.
          ``False`` otherwise.
         """
-
-        actions = ['leftclick', 'middleclick', 'rightclick',
-                   'upscroll', 'downscroll']
-        try:
-            action = actions[button - 1]
-        except (TypeError, IndexError):
-            self.__log_button_event(button, None, None, "Other button")
-            action = "otherclick"
-
-        m_click = self.__multi_click
-
-        with m_click.lock:
-            double = m_click.check_double(button)
-            double_action = 'double%s' % action
-
-            if double:
-                action = double_action
-
-            # Get callback function
-            cb = getattr(self, 'on_%s' % action, None)
-
-            double_handler = getattr(self, 'on_%s' % double_action, None)
-            delay_execution = (not double and double_handler)
-
-            if delay_execution:
-                m_click.set_timer(button, cb, **kwargs)
-            else:
-                self.__button_callback_handler(button, cb, **kwargs)
+        pass
 
     def move(self, position):
-        self.position = position
-        return self
+        pass
 
     def text_to_pango(self):
         """
@@ -262,22 +141,7 @@ class Module(SettingsBase):
 
         Can be called multiple times (`&amp;` won't change to `&amp;amp;`).
         """
-        def replace(text):
-            components = text.split("&")
-            out = components[0]
-            for item in components[1:]:
-                if item.startswith("amp;") \
-                        or (not item.startswith("amp;")
-                            and html.unescape(f'&{item}') != f'&{item}'):
-                    out += "&" + item
-                else:
-                    out += "&amp;" + item
-            return out
-
-        if "full_text" in self.output.keys():
-            self.output["full_text"] = replace(self.output["full_text"])
-        if "short_text" in self.output.keys():
-            self.output["short_text"] = replace(self.output["short_text"])
+        pass
 
 
 class IntervalModule(Module):
@@ -288,14 +152,7 @@ class IntervalModule(Module):
     managers = {}
 
     def registered(self, status_handler):
-        super(IntervalModule, self).registered(status_handler)
-        if self.interval in IntervalModule.managers:
-            IntervalModule.managers[self.interval].append(self)
-        else:
-            am = Manager(self.interval)
-            am.append(self)
-            IntervalModule.managers[self.interval] = am
-            am.start()
+        pass
 
     def __call__(self):
         self.run()

@@ -73,53 +73,14 @@ class MoonPhase(IntervalModule):
     }
 
     def pos(now=None):
-        days_in_second = 86400
-
-        now = datetime.datetime.now()
-        difference = now - datetime.datetime(2001, 1, 1)
-
-        days = dec(difference.days) + (dec(difference.seconds) / dec(days_in_second))
-        lunarCycle = dec("0.20439731") + (days * dec("0.03386319269"))
-
-        return lunarCycle % dec(1)
+        pass
 
     def current_phase(self):
 
-        lunarCycle = self.pos()
-
-        index = (lunarCycle * dec(8)) + dec("0.5")
-        index = math.floor(index)
-
-        return {
-            0: "New Moon",
-            1: "Waxing Crescent",
-            2: "First Quarter",
-            3: "Waxing Gibbous",
-            4: "Full Moon",
-            5: "Waning Gibbous",
-            6: "Last Quarter",
-            7: "Waning Crescent",
-        }[int(index) & 7]
+        pass
 
     def illum(self):
-        phase = 0
-        lunarCycle = float(self.pos()) * 100
-
-        if lunarCycle > 50:
-            phase = 100 - lunarCycle
-        else:
-            phase = lunarCycle * 2
-
-        return phase
+        pass
 
     def run(self):
-        fdict = {
-            "status": self.status[self.current_phase()],
-            "illum": self.illum(),
-            "moonicon": self.moonicon[self.current_phase()]
-        }
-        self.data = fdict
-        self.output = {
-            "full_text": formatp(self.format, **fdict),
-            "color": self.color[self.current_phase()],
-        }
+        pass

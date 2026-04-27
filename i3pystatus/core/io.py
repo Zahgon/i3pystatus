@@ -15,18 +15,11 @@ class IOHandler:
 
     def write_line(self, message):
         """Unbuffered printing to stdout."""
-
-        self.out.write(message + "\n")
-        self.out.flush()
+        pass
 
     def read(self):
         """Iterate over all input lines (Generator)"""
-
-        while True:
-            try:
-                yield self.read_line()
-            except EOFError:
-                return
+        pass
 
     def read_line(self):
         """
@@ -34,16 +27,7 @@ class IOHandler:
 
         Raises EOFError if the end of stream has been reached
         """
-
-        try:
-            line = self.inp.readline().strip()
-        except KeyboardInterrupt:
-            raise EOFError()
-
-        # i3status sends EOF, or an empty line
-        if not line:
-            raise EOFError()
-        return line
+        pass
 
 
 class StandaloneIO(IOHandler):
@@ -88,41 +72,23 @@ class StandaloneIO(IOHandler):
         signal.signal(signal.SIGUSR1, self.refresh_signal_handler)
 
     def read(self):
-        self.compute_treshold_interval()
-        self.refresh_cond.acquire()
-
-        while True:
-            try:
-                self.refresh_cond.wait(timeout=self.interval)
-            except KeyboardInterrupt:
-                self.refresh_cond.release()
-                return
-
-            yield self.read_line()
+        pass
 
     def read_line(self):
-        self.n += 1
-
-        return self.proto[min(self.n, len(self.proto) - 1)]
+        pass
 
     def compute_treshold_interval(self):
         """
         Current method is to compute average from all intervals.
         """
-
-        intervals = [m.interval for m in self.modules if hasattr(m, "interval")]
-        if len(intervals) > 0:
-            self.treshold_interval = round(sum(intervals) / len(intervals))
+        pass
 
     def async_refresh(self):
         """
         Calling this method will send the status line to i3bar immediately
         without waiting for timeout (1s by default).
         """
-
-        self.refresh_cond.acquire()
-        self.refresh_cond.notify()
-        self.refresh_cond.release()
+        pass
 
     def refresh_signal_handler(self, signo, frame):
         """
@@ -139,21 +105,7 @@ class StandaloneIO(IOHandler):
         'real time'.
         This also prevents possible lag when updating all modules in a row.
         """
-
-        if signo != signal.SIGUSR1:
-            return
-
-        for module in self.modules:
-            if hasattr(module, "interval"):
-                if module.interval > self.treshold_interval:
-                    thread = Thread(target=module.run)
-                    thread.start()
-                else:
-                    module.run()
-            else:
-                module.run()
-
-        self.async_refresh()
+        pass
 
     def suspend_signal_handler(self, signo, frame):
         """
@@ -167,13 +119,7 @@ class StandaloneIO(IOHandler):
         that they should suspend any module that does not set the keep_alive flag to a truthy value, and when we
         have been continued, notify the IntervalModule managers that they can resume execution of all modules.
         """
-        if signo != signal.SIGUSR2:
-            return
-        self.stopped = not self.stopped
-        if self.stopped:
-            [m.suspend() for m in IntervalModule.managers.values()]
-        else:
-            [m.resume() for m in IntervalModule.managers.values()]
+        pass
 
 
 class JSONIO:
@@ -184,20 +130,9 @@ class JSONIO:
 
     def read(self):
         """Iterate over all JSON input (Generator)"""
-
-        for line in self.io.read():
-            with self.parse_line(line) as j:
-                yield j
+        pass
 
     @contextmanager
     def parse_line(self, line):
         """Parse a single line of JSON and write modified JSON back."""
-
-        prefix = ""
-        # ignore comma at start of lines
-        if line.startswith(","):
-            line, prefix = line[1:], ","
-
-        j = json.loads(line)
-        yield j
-        self.io.write_line(prefix + json.dumps(j))
+        pass

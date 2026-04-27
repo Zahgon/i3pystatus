@@ -13,14 +13,7 @@ class PackageKit(Backend):
 
     @property
     def updates(self):
-        command = "pkcon get-updates -p"
-        pk = run_through_shell(command.split())
-
-        out = pk.out.splitlines(True)
-        resultStrings = ("Security", "Bug fix", "Enhancement")
-        out = "".join([line for line in out[out.index("Results:\n") + 1:]
-                       if line.startswith(resultStrings)])
-        return out.count("\n"), out
+        pass
 
 Backend = PackageKit
 

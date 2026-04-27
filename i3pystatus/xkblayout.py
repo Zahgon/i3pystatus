@@ -20,14 +20,14 @@ class Xkblayout(IntervalModule):
 
     .. rubric:: Available formatters
 
-    * `{num}` — current group number
-    * `{name}` — current group name
-    * `{symbol}` — current group symbol
-    * `{variant}` — current group variant
-    * `{count}` — number of all groups
-    * `{names}` — names of all groups
-    * `{symbols}` — symbols of all groups
-    * `{variants}` — variants of all groups
+    * `{num}` â€” current group number
+    * `{name}` â€” current group name
+    * `{symbol}` â€” current group symbol
+    * `{variant}` â€” current group variant
+    * `{count}` â€” number of all groups
+    * `{names}` â€” names of all groups
+    * `{symbols}` â€” symbols of all groups
+    * `{variants}` â€” variants of all groups
     """
 
     interval = 1
@@ -47,50 +47,13 @@ class Xkblayout(IntervalModule):
     on_downscroll = ["change_layout", -1]
 
     def init(self):
-        if self.layouts:
-            self.set_layouts(self.layouts)
-
-        self._xkb = XKeyboard(auto_open=True)
+        pass
 
     def set_layouts(self, layouts):
-        self.layouts = layouts    # Set, so that it could be used as a callback
-
-        layouts_parts = [x.split() for x in self.layouts]
-        symbols_variants_zipped = zip_longest(*layouts_parts, fillvalue="")
-        symbols_variants_str = [",".join(x) for x in symbols_variants_zipped]
-        assert len(symbols_variants_str) > 0
-
-        if len(symbols_variants_str) == 1:
-            symbols = symbols_variants_str[0]
-            args = "setxkbmap -layout {}".format(symbols)
-        elif len(symbols_variants_str) == 2:
-            (symbols, variants) = symbols_variants_str
-            args = "setxkbmap -layout {} -variant {}".format(symbols, variants)
-        else:
-            raise ValueError("Wrong layouts value: {}".format(self.layouts))
-
-        subprocess.check_call(args.split())
+        pass
 
     def change_layout(self, increment=1):
-        self._xkb.group_num += increment
+        pass
 
     def run(self):
-        cdict = {
-            "num": self._xkb.group_num,
-            "name": self._xkb.group_name,
-            "symbol": self._xkb.group_symbol,
-            "variant": self._xkb.group_variant,
-            "count": self._xkb.groups_count,
-            "names": self._xkb.groups_names,
-            "symbols": self._xkb.groups_symbols,
-            "variants": self._xkb.groups_variants,
-        }
-
-        full_text = self.format.format(**cdict)
-        full_text = full_text.upper() if self.uppercase else full_text
-
-        self.data = cdict
-        self.output = {
-            "full_text": full_text,
-            "color": self.color,
-        }
+        pass

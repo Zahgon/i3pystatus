@@ -51,33 +51,4 @@ class Swap(IntervalModule):
     )
 
     def run(self):
-        swap_usage = swap_memory()
-
-        if self.hide_if_empty and swap_usage.used == 0:
-            self.output = {}
-            return
-        elif swap_usage.total == 0:
-            format = self.format_no_swap if self.format_no_swap else self.format
-            color = self.color_no_swap if self.color_no_swap else self.color
-        else:
-            format = self.format
-            if swap_usage.percent >= self.alert_percentage:
-                color = self.alert_color
-            elif swap_usage.percent >= self.warn_percentage:
-                color = self.warn_color
-            else:
-                color = self.color
-
-        cdict = {
-            "free": swap_usage.free / self.divisor,
-            "percent_used": swap_usage.percent,
-            "used": swap_usage.used / self.divisor,
-            "total": swap_usage.total / self.divisor,
-        }
-        round_dict(cdict, self.round_size)
-
-        self.data = cdict
-        self.output = {
-            "full_text": format.format(**cdict),
-            "color": color
-        }
+        pass

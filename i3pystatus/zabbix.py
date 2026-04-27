@@ -36,44 +36,4 @@ class Zabbix(IntervalModule):
 
     def run(self):
 
-        alerts_color = ["#DBDBDB", "#D6F6FF", "#FFF6A5", "#FFB689", "#FF9999", "#FF3838"]
-        zapi = ZabbixAPI(self.zabbix_server)
-        try:
-            zapi.login(self.zabbix_user, self.zabbix_password)
-            triggers = zapi.trigger.get(only_true=1,
-                                        skipDependent=1,
-                                        groupids=self.groups,
-                                        monitored=1,
-                                        active=1,
-                                        min_severity=self.min_severity,
-                                        output=["priority"],
-                                        filter=self.filter,
-                                        withLastEventUnacknowledged=1,
-                                        )
-            alerts_list = [t['priority'] for t in triggers]
-            alerts = [0, 0, 0, 0, 0, 0]
-            cdict = {}
-            for i in range(0, 6):
-                alerts[i] = alerts_list.count(str(i))
-                cdict["a%s_count" % i] = alerts[i]
-                if alerts[i] == 0:
-                    cdict["color%s" % i] = "#FFFFFF"
-                else:
-                    cdict["color%s" % i] = alerts_color[i]
-
-            cdict["default"] = "{0}:{a[5]}/{a[4]}/{a[3]}/{a[2]}/{a[1]}/{a[0]}".format(sum(alerts), a=alerts)
-            cdict["total"] = sum(alerts)
-            if alerts_list:
-                color = alerts_color[max(map(int, alerts_list))]
-            else:
-                color = alerts_color[0]
-            result = self.format.format(**cdict)
-
-        except Exception as e:
-            result = "Zabbix connection error"
-            color = "#FF0000"
-
-        self.output = {
-            "full_text": result,
-            "color": color
-        }
+        pass

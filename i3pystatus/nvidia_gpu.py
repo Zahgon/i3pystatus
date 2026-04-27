@@ -33,7 +33,7 @@ class NvidiaGPU(IntervalModule):
         ("gpu_number", "GPU number, in case of multiple GPUs"),
     )
 
-    format = "{usage}% {temp}°C"
+    format = "{usage}% {temp}Â°C"
     format_no_gpu_found = "No GPUs found"
     divisor = 1
     coloring_based_on = "usage"
@@ -47,65 +47,4 @@ class NvidiaGPU(IntervalModule):
     gpu_number = 0
 
     def run(self):
-        try:
-            info = gpu.query_nvidia_smi(self.gpu_number)
-        except gpu.GPUNotFoundError:
-            self.output = {
-                "full_text": self.format_no_gpu_found,
-                "color": self.color_no_gpu_found
-            }
-            return
-
-        # Usage
-        gpu_percent = info.usage_gpu
-
-        # Mem
-        if info.used_mem is not None and info.total_mem is not None:
-            mem_percent = 100 * info.used_mem / info.total_mem
-        else:
-            mem_percent = None
-
-        # Temp
-        temp = info.temp
-
-        # Color
-        if self.coloring_based_on == "usage":
-            if gpu_percent >= self.alert_value:
-                color = self.alert_color
-            elif gpu_percent >= self.warn_value:
-                color = self.warn_color
-            else:
-                color = self.color
-        elif self.coloring_based_on == "mem":
-            if mem_percent >= self.alert_value:
-                color = self.alert_color
-            elif mem_percent >= self.warn_value:
-                color = self.warn_color
-            else:
-                color = self.color
-        elif self.coloring_based_on == "temp":
-            if temp >= self.alert_value:
-                color = self.alert_color
-            elif temp >= self.warn_value:
-                color = self.warn_color
-            else:
-                color = self.color
-
-        cdict = {
-            "usage": gpu_percent,
-            "used_mem": info.used_mem / self.divisor,
-            "avail_mem": info.avail_mem / self.divisor,
-            "total_mem": info.total_mem / self.divisor,
-            "percent_used_mem": mem_percent,
-            "temp": temp,
-        }
-
-        for key, value in cdict.items():
-            if value is not None:
-                cdict[key] = round(value, self.round_size)
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": color
-        }
+        pass

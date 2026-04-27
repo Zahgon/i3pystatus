@@ -16,9 +16,7 @@ def lchop(string, prefix):
     :param prefix: Prefix to remove from string
     :returns: string without the prefix
     """
-    if string.startswith(prefix):
-        return string[len(prefix):]
-    return string
+    pass
 
 
 def popwhile(predicate, iterable):
@@ -28,27 +26,11 @@ def popwhile(predicate, iterable):
     :param iterable: iterable
     :returns: iterable (generator function)
     """
-    while iterable:
-        item = iterable.pop()
-        if predicate(item):
-            yield item
-        else:
-            break
+    pass
 
 
 def partition(iterable, limit, key=lambda x: x):
-    def pop_partition():
-        sum = 0.0
-        while sum < limit and iterable:
-            sum += key(iterable[-1])
-            yield iterable.pop()
-
-    partitions = []
-    iterable.sort(reverse=True)
-    while iterable:
-        partitions.append(list(pop_partition()))
-
-    return partitions
+    pass
 
 
 def round_dict(dic, places):
@@ -56,12 +38,7 @@ def round_dict(dic, places):
     Rounds all values in a dict containing only numeric types to `places` decimal places.
     If places is None, round to INT.
     """
-    if places is None:
-        for key, value in dic.items():
-            dic[key] = round(value)
-    else:
-        for key, value in dic.items():
-            dic[key] = round(value, places)
+    pass
 
 
 class ModuleList(collections.UserList):
@@ -71,17 +48,10 @@ class ModuleList(collections.UserList):
         super().__init__()
 
     def append(self, module, *args, **kwargs):
-        module = self.finder.instanciate_class_from_module(
-            module, *args, **kwargs)
-        module.registered(self.status_handler)
-        super().append(module)
-        return module
+        pass
 
     def get(self, find_id):
-        find_id = int(find_id)
-        for module in self:
-            if id(module) == find_id:
-                return module
+        pass
 
 
 class KeyConstraintDict(collections.UserDict):
@@ -127,27 +97,15 @@ class KeyConstraintDict(collections.UserDict):
     def missing(self):
         """Returns a set of keys that are required but not set
         """
-        return self.required_keys - (self.seen_keys & self.required_keys)
+        pass
 
 
 def convert_position(pos, json):
-    if pos < 0:
-        pos = len(json) + (pos + 1)
-    return pos
+    pass
 
 
 def bytes_info_dict(in_bytes):
-    power = 2**10  # 2 ** 10 == 1024
-    n = 0
-    pow_dict = {0: '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
-    out_bytes = int(in_bytes)
-    while out_bytes > power:
-        out_bytes /= power
-        n += 1
-    return {
-        'value': out_bytes,
-        'unit': '{prefix}B'.format(prefix=pow_dict[n])
-    }
+    pass
 
 
 def flatten(l):
@@ -157,18 +115,7 @@ def flatten(l):
     :param l: list of arbitrary types and lists
     :returns: list of arbitrary types
     """
-    l = list(l)
-    i = 0
-    while i < len(l):
-        while isinstance(l[i], list):
-            if not l[i]:
-                l.pop(i)
-                i -= 1
-                break
-            else:
-                l[i:i + 1] = l[i]
-        i += 1
-    return l
+    pass
 
 
 def formatp(string, **kwargs):
@@ -191,105 +138,7 @@ def formatp(string, **kwargs):
     :param kwargs: keyword arguments providing data for the format string
     :returns: Formatted string
     """
-
-    def build_stack(string):
-        """
-        Builds a stack with OpeningBracket, ClosingBracket and String tokens.
-        Tokens have a level property denoting their nesting level.
-        They also have a string property containing associated text (empty for
-        all tokens but String tokens).
-        """
-
-        class Token:
-            string = ""
-
-        class OpeningBracket(Token):
-            pass
-
-        class ClosingBracket(Token):
-            pass
-
-        class String(Token):
-            def __init__(self, str):
-                self.string = str
-
-        TOKENS = {
-            "[": OpeningBracket,
-            "]": ClosingBracket,
-        }
-
-        stack = []
-
-        # Index of next unconsumed char
-        next = 0
-        # Last consumed char
-        prev = ""
-        # Current char
-        char = ""
-        # Current level
-        level = 0
-
-        while next < len(string):
-            prev = char
-            char = string[next]
-            next += 1
-
-            if prev != "\\" and char in TOKENS:
-                token = TOKENS[char]()
-                token.index = next
-                if char == "]":
-                    level -= 1
-                token.level = level
-                if char == "[":
-                    level += 1
-                stack.append(token)
-            else:
-                if stack and isinstance(stack[-1], String):
-                    stack[-1].string += char
-                else:
-                    token = String(char)
-                    token.level = level
-                    stack.append(token)
-        return stack
-
-    def build_tree(items, level=0):
-        """
-        Builds a list-of-lists tree (in forward order) from a stack (reversed order),
-        and formats the elements on the fly, discarding everything not eligible for
-        inclusion.
-        """
-        subtree = []
-
-        while items:
-            nested = []
-            while items[0].level > level:
-                nested.append(items.pop(0))
-            if nested:
-                subtree.append(build_tree(nested, level + 1))
-
-            item = items.pop(0)
-            if item.string:
-                string = item.string
-                if level == 0:
-                    subtree.append(string.format(**kwargs))
-                else:
-                    fields = re.findall(r"({(\w+)[^}]*})", string)
-                    successful_fields = 0
-                    for fieldspec, fieldname in fields:
-                        if kwargs.get(fieldname, False):
-                            successful_fields += 1
-                    if successful_fields == len(fields):
-                        subtree.append(string.format(**kwargs))
-                    else:
-                        return []
-        return subtree
-
-    def merge_tree(items):
-        return "".join(flatten(items)).replace(r"\]", "]").replace(r"\[", "[")
-
-    stack = build_stack(string)
-    tree = build_tree(stack, 0)
-    return merge_tree(tree)
+    pass
 
 
 class TimeWrapper:
@@ -358,13 +207,7 @@ def require(predicate):
     """
 
     def decorator(method):
-        @functools.wraps(method)
-        def wrapper(*args, **kwargs):
-            if predicate():
-                return method(*args, **kwargs)
-            return None
-
-        return wrapper
+        pass
 
     return decorator
 
@@ -405,36 +248,15 @@ class internet:
 
     @staticmethod
     def check_connection():
-        for res in internet.dns_cache:
-            try:
-                if internet.check(res):
-                    return True
-            except OSError:
-                pass
-        return False
+        pass
 
     @staticmethod
     def check(res):
-        af, socktype, proto, canonname, sa = res
-        sock = None
-        try:
-            sock = socket.socket(af, socktype, proto)
-            sock.settimeout(1)
-            sock.connect(sa)
-            sock.close()
-            return True
-        except socket.error:
-            if sock is not None:
-                sock.close()
-            raise
+        pass
 
     @staticmethod
     def resolve():
-        host, port = internet.address
-        try:
-            return socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM)
-        except socket.gaierror:
-            return []
+        pass
 
 
 def make_graph(values, lower_limit=0.0, upper_limit=100.0, style="blocks"):
@@ -447,57 +269,7 @@ def make_graph(values, lower_limit=0.0, upper_limit=100.0, style="blocks"):
     :param style: Drawing style ('blocks', 'braille-fill', 'braille-peak', or 'braille-snake').
     :returns: Bar as a string
     """
-
-    values = [float(n) for n in values]
-    mn, mx = min(values), max(values)
-    mn = mn if lower_limit is None else min(mn, float(lower_limit))
-    mx = mx if upper_limit is None else max(mx, float(upper_limit))
-    extent = mx - mn
-
-    if style == 'blocks':
-        bar = '_▁▂▃▄▅▆▇█'
-        bar_count = len(bar) - 1
-        if extent == 0:
-            graph = '_' * len(values)
-        else:
-            graph = ''.join(bar[int((n - mn) / extent * bar_count)] for n in values)
-    elif style in ['braille-fill', 'braille-peak', 'braille-snake']:
-        # idea from https://github.com/asciimoo/drawille
-        # unicode values from http://en.wikipedia.org/wiki/Braille
-
-        vpad = values if len(values) % 2 == 0 else values + [mn]
-        vscale = [round(4 * (vp - mn) / extent) for vp in vpad]
-        l = len(vscale) // 2
-
-        # do the 2-character collapse separately for clarity
-        if 'fill' in style:
-            vbits = [[0, 0x40, 0x44, 0x46, 0x47][vs] for vs in vscale]
-        elif 'peak' in style:
-            vbits = [[0, 0x40, 0x04, 0x02, 0x01][vs] for vs in vscale]
-        else:
-            assert('snake' in style)
-            # there are a few choices for what to put last in vb2.
-            # arguable vscale[-1] from the _previous_ call is best.
-            vb2 = [vscale[0]] + vscale + [0]
-            vbits = []
-            for i in range(1, l + 1):
-                c = 0
-                for j in range(min(vb2[i - 1], vb2[i], vb2[i + 1]), vb2[i] + 1):
-                    c |= [0, 0x40, 0x04, 0x02, 0x01][j]
-                vbits.append(c)
-
-        # 2-character collapse
-        graph = ''
-        for i in range(0, l, 2):
-            b1 = vbits[i]
-            b2 = vbits[i + 1]
-            if b2 & 0x40:
-                b2 = b2 - 0x30
-            b2 = b2 << 3
-            graph += chr(0x2800 + b1 + b2)
-    else:
-        raise NotImplementedError("Graph drawing style '%s' unimplemented." % style)
-    return graph
+    pass
 
 
 def make_vertical_bar(percentage, width=1, glyphs=None):
@@ -508,11 +280,7 @@ def make_vertical_bar(percentage, width=1, glyphs=None):
     :param width: How many characters wide the bar should be.
     :returns: Bar as a String
     """
-    if glyphs is not None:
-        bar = make_glyph(percentage, lower_bound=0, upper_bound=100, glyphs=glyphs)
-    else:
-        bar = make_glyph(percentage, lower_bound=0, upper_bound=100)
-    return bar * width
+    pass
 
 
 def make_bar(percentage):
@@ -522,18 +290,10 @@ def make_bar(percentage):
     :param percentage: A value between 0 and 100
     :returns: Bar as a string
     """
-
-    bars = [' ', '▏', '▎', '▍', '▌', '▋', '▋', '▊', '▊', '█']
-    tens = int(percentage / 10)
-    ones = int(percentage) - tens * 10
-    result = tens * '█'
-    if ones >= 1:
-        result = result + bars[ones]
-    result = result + (10 - len(result)) * ' '
-    return result
+    pass
 
 
-def make_glyph(number, glyphs=" _▁▂▃▄▅▆▇█", lower_bound=0, upper_bound=100, enable_boundary_glyphs=False):
+def make_glyph(number, glyphs=" _â–�â–‚â–ƒâ–„â–…â–†â–‡â–ˆ", lower_bound=0, upper_bound=100, enable_boundary_glyphs=False):
     """
     Returns a single glyph from the list of glyphs provided relative to where
     the number is in the range (by default a percentage value is expected).
@@ -555,29 +315,7 @@ def make_glyph(number, glyphs=" _▁▂▃▄▅▆▇█", lower_bound=0, upper
     respectively.
     :returns: The glyph found to represent the number
     """
-
-    # Handle edge cases first
-    if lower_bound >= upper_bound:
-        raise Exception("Invalid upper/lower bounds")
-    elif number <= lower_bound:
-        return glyphs[0]
-    elif number >= upper_bound:
-        return glyphs[-1]
-
-    if enable_boundary_glyphs:
-        # Trim first and last items from glyphs as boundary conditions already
-        # handled
-        glyphs = glyphs[1:-1]
-
-    # Determine a value 0 - 1 that represents the position in the range
-    adjusted_value = (number - lower_bound) / (upper_bound - lower_bound)
-
-    # Determine the closest glyph to show
-    # As we have positive indices, we can use int for floor rounding
-    # Adjusted_value should always be < 1
-    glyph_index = int(len(glyphs) * adjusted_value)
-
-    return glyphs[glyph_index]
+    pass
 
 
 def user_open(url_or_command):
@@ -587,23 +325,7 @@ def user_open(url_or_command):
 
     :param url_or_command: String containing URL or command
     """
-    from urllib.parse import urlparse
-    scheme = urlparse(url_or_command).scheme
-    if scheme == 'http' or scheme == 'https':
-        import webbrowser
-        import os
-        # webbrowser.open() sometimes prints a message for some reason and confuses i3
-        # Redirect stdout briefly to prevent this from happening.
-        savout = os.dup(1)
-        os.close(1)
-        os.open(os.devnull, os.O_RDWR)
-        try:
-            webbrowser.open(url_or_command)
-        finally:
-            os.dup2(savout, 1)
-    else:
-        import subprocess
-        subprocess.Popen(url_or_command, shell=True)
+    pass
 
 
 class MultiClickHandler(object):
@@ -620,49 +342,16 @@ class MultiClickHandler(object):
         self.kwargs = None
 
     def set_timer(self, button, cb, **kwargs):
-        with self.lock:
-            self.clear_timer()
-
-            self.timer = Timer(self.timeout,
-                               self._timer_function,
-                               args=[self._timer_id])
-            self.button = button
-            self.cb = cb
-            self.kwargs = kwargs
-
-            self.timer.start()
+        pass
 
     def clear_timer(self):
-        with self.lock:
-            if self.timer is None:
-                return
-
-            self._timer_id += 1  # Invalidate existent timer
-
-            self.timer.cancel()  # Cancel the existent timer
-
-            self.timer = None
-            self.button = None
-            self.cb = None
+        pass
 
     def _timer_function(self, timer_id):
-        with self.lock:
-            if self._timer_id != timer_id:
-                return
-            self.callback_handler(self.button, self.cb, **self.kwargs)
-            self.clear_timer()
+        pass
 
     def check_double(self, button):
-        if self.timer is None:
-            return False
-
-        ret = True
-        if button != self.button:
-            self.callback_handler(self.button, self.cb, **self.kwargs)
-            ret = False
-
-        self.clear_timer()
-        return ret
+        pass
 
 
 def get_module(function):
@@ -681,13 +370,4 @@ def get_module(function):
             execute('sh -c "ip addr show dev {dev} | xmessage -file -"'.format(dev=module.interface))
         status.register("network", interface="wlan1", on_leftclick=display_ip_verbose)
     """
-    @functools.wraps(function)
-    def call_wrapper(*args, **kwargs):
-        stack = inspect.stack()
-        caller_frame_info = stack[1]
-        self = caller_frame_info[0].f_locals["self"]
-        # not completly sure whether this is necessary
-        # see note in Python docs about stack frames
-        del stack
-        function(self, *args, **kwargs)
-    return call_wrapper
+    pass

@@ -34,38 +34,7 @@ class Openstack_vms(IntervalModule):
     on_leftclick = "openurl"
 
     def run(self):
-        nclient = client.Client(
-            '2.0',
-            self.username,
-            self.password,
-            self.tenant_name,
-            self.auth_url
-        )
-
-        active_servers = 0
-        nonactive_servers = 0
-        server_list = nclient.servers.list()
-        for server in server_list:
-            if server.status == 'ACTIVE':
-                active_servers = active_servers + 1
-            else:
-                nonactive_servers = nonactive_servers + 1
-
-        if nonactive_servers > self.threshold:
-            display_color = self.crit_color
-        else:
-            display_color = self.color
-        cdict = {
-            "tenant_name": self.tenant_name,
-            "active_servers": active_servers,
-            "nonactive_servers": nonactive_servers,
-        }
-
-        self.data = cdict
-        self.output = {
-            "full_text": self.format.format(**cdict),
-            "color": display_color
-        }
+        pass
 
     def openurl(self):
-        webbrowser.open_new_tab(self.horizon_url)
+        pass

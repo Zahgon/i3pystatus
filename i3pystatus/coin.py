@@ -42,7 +42,7 @@ class Coin(IntervalModule):
         ("status_interval", "percent change status in the last: '1h' / '24h' / '7d'")
     )
 
-    symbol = "¤"
+    symbol = "Â¤"
     color = None
     format = "{symbol} {price}{status}"
     coin = "ethereum"
@@ -52,39 +52,11 @@ class Coin(IntervalModule):
     decimal = 2
 
     def fetch_data(self):
-        response = requests.get("https://api.coinmarketcap.com/v1/ticker/{}/?convert={}".format(self.coin, self.currency))
-        coin_data = response.json()[0]
-        coin_data["price"] = coin_data.pop("price_{}".format(self.currency.lower()))
-        coin_data["24h_volume"] = coin_data.pop("24h_volume_{}".format(self.currency.lower()))
-        coin_data["market_cap"] = coin_data.pop("market_cap_{}".format(self.currency.lower()))
-        coin_data["symbol"] = self.symbol
-        return coin_data
+        pass
 
     def set_status(self, change):
-        if change > 10:
-            return '⮅'
-        elif change > 0:
-            return '⭡'
-        elif change < -10:
-            return '⮇'
-        elif change < 0:
-            return '⭣'
-        else:
-            return ''
+        pass
 
     @require(internet)
     def run(self):
-        fdict = self.fetch_data()
-
-        symbols = dict(bitcoin='฿', ethereum='Ξ', litecoin='Ł', dash='Đ')
-        if self.coin in symbols:
-            fdict["symbol"] = symbols[self.coin]
-
-        fdict["status"] = self.set_status(float(fdict["percent_change_{}".format(self.status_interval)]))
-        fdict["price"] = str(round(Decimal(fdict["price"]), self.decimal))
-
-        self.data = fdict
-
-        self.output = {"full_text": self.format.format(**fdict)}
-        if self.color is not None:
-            self.output['color'] = self.color
+        pass

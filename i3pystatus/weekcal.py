@@ -31,40 +31,4 @@ class WeekCal(IntervalModule):
         self.cal = Calendar(self.startofweek)
 
     def run(self):
-        today = date.today()
-        yesterday = today - timedelta(days=1)
-
-        outstr = today.strftime(self.prefixformat) + " "
-
-        weekdays = self.cal.iterweekdays()
-        if today.weekday() == self.startofweek:
-            outstr += self.todayhighlight[0]
-        else:
-            outstr += " "
-
-        nextweek = False  # keep track of offset if week doesn't start on monday
-
-        for w in weekdays:
-            if w == 0 and self.startofweek != 0:
-                nextweek = True
-            if nextweek and today.weekday() >= self.startofweek:
-                w += 7
-            elif not nextweek and today.weekday() < self.startofweek:
-                w -= 7
-
-            weekday_offset = today.weekday() - w
-            weekday_delta = timedelta(days=weekday_offset)
-            weekday = today - weekday_delta
-            if weekday == yesterday:
-                outstr += weekday.strftime("%d") + self.todayhighlight[0]
-            elif weekday == today:
-                outstr += weekday.strftime("%d") + self.todayhighlight[1]
-            else:
-                outstr += weekday.strftime("%d ")
-
-        outstr += " " + today.strftime(self.suffixformat)
-
-        self.output = {
-            "full_text": outstr,
-            "urgent": False,
-        }
+        pass

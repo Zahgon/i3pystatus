@@ -26,31 +26,7 @@ class SGETracker(IntervalModule):
     color = "#ffffff"
 
     def parse_qstat_xml(self):
-        xml = subprocess.check_output("ssh {0} \"qstat -xml\"".format(self.ssh),
-                                      stderr=subprocess.STDOUT,
-                                      shell=True)
-        root = etree.fromstring(xml)
-        job_dict = {'qw': 0, 'Eqw': 0, 'r': 0}
-
-        for j in root.xpath('//job_info/job_info/job_list'):
-            job_dict[j.find("state").text] += 1
-
-        for j in root.xpath('//job_info/queue_info/job_list'):
-            job_dict[j.find("state").text] += 1
-
-        return job_dict
+        pass
 
     def run(self):
-        jobs = self.parse_qstat_xml()
-
-        fdict = {
-            "queued": jobs['qw'],
-            "error": jobs['Eqw'],
-            "running": jobs['r']
-        }
-
-        self.data = fdict
-        self.output = {
-            "full_text": self.format.format(**fdict).strip(),
-            "color": self.color
-        }
+        pass

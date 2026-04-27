@@ -11,9 +11,7 @@ class Cower(Backend):
 
     @property
     def updates(self):
-        command = ["cower", "-u"]
-        cower = run_through_shell(command)
-        return cower.out.count('\n'), cower.out
+        pass
 
 Backend = Cower
 

@@ -21,71 +21,71 @@ class MLB(ScoresBackend):
 
     .. rubric:: Available formatters
 
-    * `{home_team}` — Depending on the value of the ``team_format`` option,
+    * `{home_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the home team's name, abbreviation, or city
-    * `{home_score}` — Home team's current score
-    * `{home_wins}` — Home team's number of wins
-    * `{home_losses}` — Home team's number of losses
-    * `{home_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{home_score}` â€” Home team's current score
+    * `{home_wins}` â€” Home team's number of wins
+    * `{home_losses}` â€” Home team's number of losses
+    * `{home_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the home team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{away_team}` — Depending on the value of the ``team_format`` option,
+    * `{away_team}` â€” Depending on the value of the ``team_format`` option,
       will contain either the away team's name, abbreviation, or city
-    * `{away_score}` — Away team's current score
-    * `{away_wins}` — Away team's number of wins
-    * `{away_losses}` — Away team's number of losses
-    * `{away_favorite}` — Displays the value for the :py:mod:`.scores` module's
+    * `{away_score}` â€” Away team's current score
+    * `{away_wins}` â€” Away team's number of wins
+    * `{away_losses}` â€” Away team's number of losses
+    * `{away_favorite}` â€” Displays the value for the :py:mod:`.scores` module's
       ``favorite`` attribute, if the away team is one of the teams being
       followed. Otherwise, this formatter will be blank.
-    * `{top_bottom}` — Displays the value of either ``inning_top`` or
+    * `{top_bottom}` â€” Displays the value of either ``inning_top`` or
       ``inning_bottom`` based on whether the game is in the top or bottom of an
       inning.
-    * `{inning}` — Current inning
-    * `{outs}` — Number of outs in current inning
-    * `{venue}` — Name of ballpark where game is being played
-    * `{start_time}` — Start time of game in system's localtime (supports
+    * `{inning}` â€” Current inning
+    * `{outs}` â€” Number of outs in current inning
+    * `{venue}` â€” Name of ballpark where game is being played
+    * `{start_time}` â€” Start time of game in system's localtime (supports
       strftime formatting, e.g. `{start_time:%I:%M %p}`)
-    * `{delay}` — Reason for delay, if game is currently delayed. Otherwise,
+    * `{delay}` â€” Reason for delay, if game is currently delayed. Otherwise,
       this formatter will be blank.
-    * `{postponed}` — Reason for postponement, if game has been postponed.
+    * `{postponed}` â€” Reason for postponement, if game has been postponed.
       Otherwise, this formatter will be blank.
-    * `{suspended}` — Reason for suspension, if game has been suspended.
+    * `{suspended}` â€” Reason for suspension, if game has been suspended.
       Otherwise, this formatter will be blank.
-    * `{extra_innings}` — When a game lasts longer than 9 innings, this
+    * `{extra_innings}` â€” When a game lasts longer than 9 innings, this
       formatter will show that number of innings. Otherwise, it will blank.
 
     .. rubric:: Team abbreviations
 
-    * **ARI** — Arizona Diamondbacks
-    * **ATL** — Atlanta Braves
-    * **BAL** — Baltimore Orioles
-    * **BOS** — Boston Red Sox
-    * **CHC** — Chicago Cubs
-    * **CIN** — Cincinnati Reds
-    * **CLE** — Cleveland Guardians
-    * **COL** — Colorado Rockies
-    * **CWS** — Chicago White Sox
-    * **DET** — Detroit Tigers
-    * **HOU** — Houston Astros
-    * **KC** — Kansas City Royals
-    * **LAA** — Los Angeles Angels of Anaheim
-    * **LAD** — Los Angeles Dodgers
-    * **MIA** — Miami Marlins
-    * **MIL** — Milwaukee Brewers
-    * **MIN** — Minnesota Twins
-    * **NYY** — New York Yankees
-    * **NYM** — New York Mets
-    * **OAK** — Oakland Athletics
-    * **PHI** — Philadelphia Phillies
-    * **PIT** — Pittsburgh Pirates
-    * **SD** — San Diego Padres
-    * **SEA** — Seattle Mariners
-    * **SF** — San Francisco Giants
-    * **STL** — St. Louis Cardinals
-    * **TB** — Tampa Bay Rays
-    * **TEX** — Texas Rangers
-    * **TOR** — Toronto Blue Jays
-    * **WSH** — Washington Nationals
+    * **ARI** â€” Arizona Diamondbacks
+    * **ATL** â€” Atlanta Braves
+    * **BAL** â€” Baltimore Orioles
+    * **BOS** â€” Boston Red Sox
+    * **CHC** â€” Chicago Cubs
+    * **CIN** â€” Cincinnati Reds
+    * **CLE** â€” Cleveland Guardians
+    * **COL** â€” Colorado Rockies
+    * **CWS** â€” Chicago White Sox
+    * **DET** â€” Detroit Tigers
+    * **HOU** â€” Houston Astros
+    * **KC** â€” Kansas City Royals
+    * **LAA** â€” Los Angeles Angels of Anaheim
+    * **LAD** â€” Los Angeles Dodgers
+    * **MIA** â€” Miami Marlins
+    * **MIL** â€” Milwaukee Brewers
+    * **MIN** â€” Minnesota Twins
+    * **NYY** â€” New York Yankees
+    * **NYM** â€” New York Mets
+    * **OAK** â€” Oakland Athletics
+    * **PHI** â€” Philadelphia Phillies
+    * **PIT** â€” Pittsburgh Pirates
+    * **SD** â€” San Diego Padres
+    * **SEA** â€” Seattle Mariners
+    * **SF** â€” San Francisco Giants
+    * **STL** â€” St. Louis Cardinals
+    * **TB** â€” Tampa Bay Rays
+    * **TEX** â€” Texas Rangers
+    * **TOR** â€” Toronto Blue Jays
+    * **WSH** â€” Washington Nationals
     '''
     interval = 300
 
@@ -200,146 +200,7 @@ class MLB(ScoresBackend):
 
     @require(internet)
     def check_scores(self):
-        self.get_api_date()
-        url = self.api_url.format(date=self.date)
-
-        game_list = self.get_nested(
-            self.api_request(url),
-            'dates:0:games',
-            default=[])
-        if not isinstance(game_list, list):
-            # When only one game is taking place during a given day, the game
-            # data is just a single dict containing that game's data, rather
-            # than a list of dicts. Encapsulate the single game dict in a list
-            # to make it process correctly in the loop below.
-            game_list = [game_list]
-
-        # Convert list of games to dictionary for easy reference later on
-        data = {}
-        team_game_map = {}
-        for game in game_list:
-            try:
-                id_ = game['gamePk']
-            except (KeyError, TypeError):
-                continue
-
-            away_abbrev = self.get_nested(
-                game,
-                'teams:away:team:abbreviation').upper()
-            home_abbrev = self.get_nested(
-                game,
-                'teams:home:team:abbreviation').upper()
-            if away_abbrev and home_abbrev:
-                try:
-                    for team in (home_abbrev, away_abbrev):
-                        if team in self.favorite_teams:
-                            team_game_map.setdefault(team, []).append(id_)
-                except KeyError:
-                    continue
-
-            data[id_] = game
-
-        self.interpret_api_return(data, team_game_map)
+        pass
 
     def process_game(self, game):
-        ret = {}
-
-        self.logger.debug(f'Processing {self.name} game data: {game}')
-
-        linescore = self.get_nested(game, 'linescore', default={})
-
-        ret['id'] = game['gamePk']
-        ret['inning'] = self.get_nested(linescore, 'currentInning', default=0)
-        ret['outs'] = self.get_nested(linescore, 'outs')
-        ret['live_url'] = self.live_url.format(id=ret['id'])
-
-        for team in ('away', 'home'):
-            team_data = self.get_nested(game, f'teams:{team}', default={})
-
-            if team == 'home':
-                ret['venue'] = self.get_nested(team_data, 'venue:name')
-
-            ret[f'{team}_city'] = self.get_nested(
-                team_data,
-                'team:locationName')
-            ret[f'{team}_name'] = self.get_nested(
-                team_data,
-                'team:teamName')
-            ret[f'{team}_abbreviation'] = self.get_nested(
-                team_data,
-                'team:abbreviation')
-
-            ret[f'{team}_wins'] = self.get_nested(
-                team_data,
-                'leagueRecord:wins',
-                callback=self.zero_fallback,
-                default=0)
-            ret[f'{team}_losses'] = self.get_nested(
-                team_data,
-                'leagueRecord:losses',
-                callback=self.zero_fallback,
-                default=0)
-
-            ret[f'{team}_score'] = self.get_nested(
-                linescore,
-                f'teams:{team}:runs',
-                callback=self.zero_fallback,
-                default=0)
-
-        for key in ('delay', 'postponed', 'suspended'):
-            ret[key] = ''
-
-        ret['status'] = self.get_nested(game, 'status:detailedState').replace(' ', '_').lower()
-
-        if ret['status'] == 'delayed_start':
-            ret['status'] = 'pregame'
-            ret['delay'] = self.get_nested(game, 'status:reason', default='Unknown')
-        elif ret['status'].startswith('delayed'):
-            ret['status'] = 'in_progress'
-            ret['delay'] = game['status']['detailedState'].split(':', 1)[-1].strip()
-        elif ret['status'] == 'postponed':
-            ret['postponed'] = self.get_nested(game, 'status:reason', default='Unknown Reason')
-        elif ret['status'].startswith('suspended'):
-            ret['status'] = 'suspended'
-            ret['suspended'] = self.get_nested(
-                game,
-                'status:detailedState',
-                default='Suspended').replace('Suspended: ', '')
-        elif ret['status'].startswith('completed_early') or ret['status'] == 'game_over':
-            ret['status'] = 'final'
-        elif ret['status'] not in ('in_progress', 'final'):
-            ret['status'] = 'pregame'
-
-        try:
-            ret['extra_innings'] = ret['inning'] \
-                if ret['status'] == 'final' and ret['inning'] != 9 \
-                else ''
-        except ValueError:
-            ret['extra_innings'] = ''
-
-        top_bottom = self.get_nested(linescore, 'inningHalf').lower()
-        ret['top_bottom'] = self.inning_top if top_bottom == 'top' \
-            else self.inning_bottom if top_bottom == 'bottom' \
-            else ''
-
-        try:
-            game_time = datetime.strptime(
-                self.get_nested(game, 'gameDate'),
-                '%Y-%m-%dT%H:%M:%SZ')
-        except ValueError as exc:
-            # Log when the date retrieved from the API return doesn't match the
-            # expected format (to help troubleshoot API changes), and set an
-            # actual datetime so format strings work as expected. The times
-            # will all be wrong, but the logging here will help us make the
-            # necessary changes to adapt to any API changes.
-            self.logger.exception(
-                f'Error encountered determining {self.name} game time for '
-                f'game {game["gamePk"]}'
-            )
-            game_time = datetime(1970, 1, 1)
-
-        ret['start_time'] = pytz.timezone('UTC').localize(game_time).astimezone()
-
-        self.logger.debug(f'Returned {self.name} formatter data: {ret}')
-
-        return ret
+        pass

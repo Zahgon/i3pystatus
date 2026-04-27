@@ -27,13 +27,7 @@ class Yay(Backend):
 
     @property
     def updates(self):
-        if(self.aur_only):
-            command = ["yay", "-Qua"]
-        else:
-            command = ["yay", "-Qu"]
-        checkupdates = run_through_shell(command)
-        out = checkupdates.out
-        return out.count("\n"), out
+        pass
 
 Backend = Yay
 

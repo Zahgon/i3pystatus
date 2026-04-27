@@ -66,7 +66,7 @@ class Reddit(IntervalModule):
     title_maxlen = 80
     interval = 300
     status = {
-        "new_mail": "✉",
+        "new_mail": "âœ‰",
         "no_mail": "",
     }
 
@@ -83,110 +83,25 @@ class Reddit(IntervalModule):
 
     @require(internet)
     def run(self):
-        reddit = self.connect()
-        fdict = {}
-
-        if self.message_pattern.search(self.format):
-            fdict.update(self.get_messages(reddit))
-        if self.subreddit_pattern.search(self.format):
-            fdict.update(self.get_subreddit(reddit))
-        if self.user_pattern.search(self.format):
-            fdict.update(self.get_redditor(reddit))
-
-        if self.colorize and fdict.get("message_unread", False):
-            color = self.color_orangered
-            if self.mail_brackets:
-                fdict["message_unread"] = "[{}]".format(fdict["message_unread"])
-        else:
-            color = self.color
-
-        self.data = fdict
-        full_text = self.format.format(**fdict)
-        self.output = {
-            "full_text": full_text,
-            "color": color,
-        }
+        pass
 
     def connect(self):
-        if not self.reddit_session:
-            self.reddit_session = praw.Reddit(user_agent='i3pystatus',
-                                              disable_update_check=True)
-        return self.reddit_session
+        pass
 
     def get_redditor(self, reddit):
-        redditor_info = {}
-        u = reddit.redditor(self.username)
-        redditor_info["link_karma"] = u.link_karma
-        redditor_info["comment_karma"] = u.comment_karma
-        return redditor_info
+        pass
 
     def get_messages(self, reddit):
-        message_info = {
-            "message_unread": "",
-            "status": self.status["no_mail"],
-            "message_author": "",
-            "message_subject": "",
-            "message_body": ""
-        }
-        unread_messages = sum(1 for i in reddit.inbox.unread())
-        if unread_messages:
-            d = vars(next(reddit.inbox.unread()))
-            message_info = {
-                "message_unread": unread_messages,
-                "message_author": d["author"],
-                "message_subject": d["subject"],
-                "message_body": d["body"].replace("\n", " "),
-                "status": self.status["new_mail"]
-            }
-        return message_info
+        pass
 
     def get_subreddit(self, reddit):
-        fdict = {}
-        subreddit_dict = {}
-        if self.subreddit:
-            s = reddit.subreddit(self.subreddit)
-        else:
-            s = reddit.front
-
-        if self.sort_by == 'hot':
-            subreddit_dict = vars(next(s.hot(limit=1)))
-        elif self.sort_by == 'new':
-            subreddit_dict = vars(next(s.new(limit=1)))
-        elif self.sort_by == 'rising':
-            try:
-                subreddit_dict = vars(next(s.rising(limit=1)))
-            except StopIteration:
-                return
-        elif self.sort_by == 'controversial':
-            subreddit_dict = vars(next(s.controversial(
-                time_filter=self.time_filter,
-                limit=1))
-            )
-        elif self.sort_by == 'top':
-            subreddit_dict = vars(next(s.top(limit=1)))
-        fdict["submission_title"] = subreddit_dict["title"]
-        fdict["submission_author"] = subreddit_dict["author"]
-        fdict["submission_points"] = subreddit_dict["ups"]
-        fdict["submission_comments"] = subreddit_dict["num_comments"]
-        fdict["submission_permalink"] = subreddit_dict["permalink"]
-        fdict["submission_url"] = subreddit_dict["url"]
-        fdict["submission_domain"] = subreddit_dict["domain"]
-        fdict["submission_subreddit"] = subreddit_dict["subreddit"]
-
-        if len(fdict["submission_title"]) > self.title_maxlen:
-            title = fdict["submission_title"][:(self.title_maxlen - 3)] + "..."
-            fdict["submission_title"] = title
-
-        self._permalink = fdict["submission_permalink"]
-        self._url = fdict["submission_url"]
-
-        return fdict
+        pass
 
     def open_mail(self):
-        user_open('https://www.reddit.com/message/unread/')
+        pass
 
     def open_permalink(self):
-        user_open(self._permalink)
+        pass
 
     def open_link(self):
-        user_open(self._url)
+        pass

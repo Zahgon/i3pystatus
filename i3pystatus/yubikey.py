@@ -15,8 +15,8 @@ class Yubikey(IntervalModule):
     """
 
     interval = 1
-    format = "Yubikey: 🔒"
-    unlocked_format = "Yubikey: 🔓"
+    format = "Yubikey: ðŸ”’"
+    unlocked_format = "Yubikey: ðŸ”“"
     timeout = 5
     color = "#00FF00"
     unlock_color = "#FF0000"
@@ -48,86 +48,21 @@ class Yubikey(IntervalModule):
 
     @property
     def _device_id(self):
-        command = run_through_shell("xinput list")
-
-        rval = ""
-
-        if command.rc == 0:
-            for line in command.out.splitlines():
-                match = self.find_regex.match(line)
-                if match:
-                    rval = match.groupdict().get("yubid", "")
-                    break
-
-        return rval
+        pass
 
     def device_status(self):
 
-        rval = "notfound"
-
-        if not self._device_id:
-            return rval
-
-        result = run_through_shell(f"xinput list-props {self._device_id}")
-        if result.rc == 0:
-            match = self.status_regex.match(result.out.splitlines()[1])
-            if match and "status" in match.groupdict():
-                status = int(match.groupdict()["status"])
-                if status:
-                    rval = "unlocked"
-                else:
-                    rval = "locked"
-
-        return rval
+        pass
 
     def _check_lock(self):
-        try:
-            st = os.stat(self.lock_file)
-
-            if int(time.time() - st.st_ctime) > self.timeout:
-                self.set_lock()
-
-        except IOError:
-            self.set_lock()
+        pass
 
     def set_lock(self, unlock=False):
 
-        if unlock:
-            command = "enable"
-        else:
-            command = "disable"
-
-        run_through_shell(f"xinput {command} {self._device_id}")
-        open(self.lock_file, mode="w").close()
+        pass
 
     def _clear_lock(self):
-        try:
-            os.unlink(self.lock_file)
-        except FileNotFoundError:
-            pass
+        pass
 
     def run(self):
-        status = self.device_status()
-
-        if status == "notfound":
-            self._clear_lock()
-            self.output = {
-                "full_text": "",
-            }
-        else:
-            if status == "unlocked":
-                self.output = {
-                    "full_text": self.unlocked_format,
-                    "color": self.unlock_color
-                }
-                self._check_lock()
-
-            elif status == "locked":
-                self.output = {
-                    "full_text": self.format,
-                    "color": self.color
-                }
-            else:
-                self.output = {
-                    "full_text": f"Error: {status}",
-                }
+        pass
